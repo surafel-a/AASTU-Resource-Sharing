@@ -1,8 +1,8 @@
 import crypto from "crypto";
 
-import AppError from "../../utils/appError.js";
-import createSendToken from "../../utils/createSendToken.js";
-import sendEmail from "../../utils/email.js";
+import AppError from "../utils/appError.js";
+import createSendToken from "../utils/createSendToken.js";
+import sendEmail from "../utils/email.js";
 import User from "../models/user.model.js";
 
 export const register = async (req, res, next) => {
