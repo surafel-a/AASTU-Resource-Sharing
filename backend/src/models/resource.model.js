@@ -7,9 +7,9 @@ const resourceSchema = new mongoose.Schema({
     required: [true, 'Please specify the resource type']
   },
   course: {
-    type: String,
-    required: [true, 'Please provide the course associated with the resource'],
-    trim: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: [true, 'Resource must be associated with a course']
   },
   department: {
     type: String,
@@ -28,8 +28,7 @@ const resourceSchema = new mongoose.Schema({
   },
   fileUrl: {
     type: String,
-    required: [true, 'Please provide a file URL for the resource'],
-    trim: true
+    required: [true, 'Please provide a file']
   },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -41,11 +40,11 @@ const resourceSchema = new mongoose.Schema({
     enum: ['public', 'department', 'course'],
     default: 'public'
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  downloads: {
+    type: Number,
+    default: 0
   }
-});
+}, { timestamps: true });
 
 const Resource = mongoose.model('Resource', resourceSchema);
 

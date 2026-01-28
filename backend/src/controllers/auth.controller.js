@@ -83,10 +83,7 @@ export const forgotPassword = async (req, res) => {
 
     console.log(error);
 
-    res.status(500).json({
-      staus: 'error',
-      message: 'Email counld not be sent. Try again later.'
-    })
+    return next(new AppError('Email counld not be sent. Try again later.', 500));
   }
 }
 
@@ -108,4 +105,23 @@ export const resetPassword = async (req, res) => {
   await user.save();
 
   createSendToken(user, 200, res);
+}
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    if(!(await user.correctPassword(req.body.currentPassword, user.password))){
+      return next(new AppError('Your current password is wrong.', 401));
+    }
+
+    user.password = req.body.newPassword;
+    user.passwordConfirm = req.body.newPasswordConfirm;
+    await user.save();
+
+    createSendToken(user, 200, res);
+    
+  } catch (error) {
+     return next(new AppError('Failed to change password', 500));
+  }
 }

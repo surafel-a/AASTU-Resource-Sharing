@@ -69,8 +69,7 @@ const userSchema = new mongoose.Schema({
     default: 'student'
   },
   photo: {
-    type: String,
-    default: 'default.jpg'
+    type: String
   },
   createdAt: {
     type: Date,
