@@ -10,8 +10,8 @@ router.post('/login', login);
 router.get('/logout', protect, logout);
 router.post('/change-password', protect, changePassword);
 
-router.post('/api/v1/auth/forget-password', forgotPassword);
-router.patch('/api/v1/auth/reset-password/:token', resetPassword);
+router.post('/api/v1/auth/forget-password', protect, forgotPassword);
+router.patch('/api/v1/auth/reset-password/:token', protect, resetPassword);
 
 
 

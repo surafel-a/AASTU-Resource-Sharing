@@ -69,15 +69,16 @@ const userSchema = new mongoose.Schema({
     default: 'student'
   },
   photo: {
-    type: String
+    type: String,
+    default: ''
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  photoId: {
+    type: String,
+    default: ''
   },
   passwordResetToken: String,
   passwordResetExpires: Date
-});
+}, { timestamps: true });
 
 userSchema.pre('save', async function(){
   if(!this.isModified('password')) return;

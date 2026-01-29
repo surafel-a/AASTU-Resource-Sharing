@@ -16,13 +16,9 @@ const reviewSchema = new mongoose.Schema({
   rating: {
     type: Number,
     min: 1,
-    default: 1
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+    default: 0
   }
-});
+}, { timestamps: true });
 
 const Review = mongoose.model('Review', reviewSchema);
 

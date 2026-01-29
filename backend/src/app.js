@@ -4,8 +4,8 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import courseRoutes from './routes/course.routes.js';
-import resourceRouter from './routes/resource.routes.js';
 import reviewRouter from './routes/review.routes.js';
+import resourceRouter from './routes/resource.routes.js';
 import bookmarkRouter from './routes/bookmark.routes.js';
 
 import { globalErrorHandler } from './middlewares/error.middleware.js';

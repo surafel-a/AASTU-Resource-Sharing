@@ -11,7 +11,7 @@ const bookmarkSchema = new mongoose.Schema({
     ref: 'Resource',
     required: [true, 'Bookmark must be associated with a resource']
   }
-});
+}, { timestamps: true });
 
 const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
 

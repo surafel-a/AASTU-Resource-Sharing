@@ -2,6 +2,9 @@ import AppError from "../utils/appError.js";
 import APIFeatures from "../utils/apiFeatures.js";
 import User from "../models/user.model.js";
 
+import { streamUpload } from "../middlewares/multer.middleware.js";
+import cloudinary from "../config/cloudinary.js";
+
 /* ============================ ADMIN CONTROLLERS ============================ */ 
 export const getAllUsers = async (req, res, next) => {
   try {
@@ -93,6 +96,19 @@ export const updateMe = async (req, res, next) => {
   try {
     const forbiddenFields = ['role', 'password', 'passwordConfirm', 'universityId'];
     forbiddenFields.forEach(field => delete req.body[field]);
+
+    if(req.file){
+      const currentUser = await User.findById(req.params.id);
+
+      if(currentUser?.photoId){
+        await cloudinary.uploader.destroy(currentUser.photoId);
+      }
+
+      const result = await streamUpload(req.file.buffer, 'AASTU_Profiles'); 
+
+      req.body.photo = result.secure_url;
+      req.body.photoId = result.public_id;
+    }
 
     const user = await User.findByIdAndUpdate(req.user.id, req.body, { 
       new: true, runValidators: true 

@@ -30,6 +30,10 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a file']
   },
+  fileId: {
+    type: String,
+    default: ''
+  },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -37,7 +41,7 @@ const resourceSchema = new mongoose.Schema({
   },
   visibility: {
     type: String,
-    enum: ['public', 'department', 'course'],
+    enum: ['public', 'department', 'course'], 
     default: 'public'
   },
   downloads: {
