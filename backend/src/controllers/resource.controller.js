@@ -19,7 +19,7 @@ export const createResource = async (req, res, next) => {
       department: req.body.department,
       title: req.body.title,
       description: req.body.description,
-      uploadedBy: req.body.uploadedBy, 
+      uploadedBy: req.user._id, 
       fileUrl: result.secure_url,
       fileId: result.public_id,
       format: result.format
@@ -110,6 +110,8 @@ export const deleteResourceById = async (req, res, next) => {
     if(!resource){
       return next(new AppError('No resource found with that ID', 404));
     }
+
+    await cloudinary.uploader.destroy(resource.fileId);
 
     res.status(204).json({
       status: 'success',
