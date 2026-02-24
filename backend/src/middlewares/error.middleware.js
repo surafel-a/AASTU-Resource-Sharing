@@ -37,7 +37,7 @@ const sendErrorDev = (err, req, res) => {
 
   // B) RENDERED WEBSITE
   console.error('ERROR 💥', err);
-  res.status(err.statusCode).render('error', {
+  res.status(err.statusCode).json({
     title: 'Something went wrong!',
     msg: err.message
   });
@@ -63,14 +63,14 @@ const sendErrorProd = (err, req, res) => {
   // B) RENDERED WEBSITE
   // B1) Operational, trusted error: send message to client
   if(err.isOperational){
-    res.status(err.statusCode).render('error', {
+    res.status(err.statusCode).json({
       title: 'Something went wrong!',
       msg: err.message
     });
   }
   // B2) Programming or other unknown error: don't leak error details
   console.error('ERROR 💥', err);
-  return res.status(err.statusCode).render('error', {
+  return res.status(err.statusCode).json({
     title: 'Something went wrong!',
     msg: 'Please try again later.'
   });

@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
@@ -12,6 +13,10 @@ import { globalErrorHandler } from './middlewares/error.middleware.js';
 
 const app = express();
 
+app.use(cors({
+  origin: process.env.CLIENT_URL, // Adjust this to your frontend URL
+  credentials: true, // Allow cookies to be sent
+}));
 app.use(express.json());
 app.use(cookieParser());
 
