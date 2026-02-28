@@ -14,7 +14,7 @@ const App = () => {
     <BrowserRouter>
       <div className="mx-10">
         <Navbar />
-      </div>
+      </div>     
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

@@ -11,7 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="flex justify-between items-center mt-5">
+    <nav className="flex justify-between items-center mt-2">
       <div>
         <Logo />
       </div>
