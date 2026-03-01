@@ -25,7 +25,7 @@ const ContinueReading = ({ icon, color, course, percentage, pageRead, totalPage 
   const selectedColor = colorStyles[color];
 
   return (
-    <div className="rounded-md p-5 bg-white shadow-xl">
+    <div className="rounded-xl p-5 bg-white shadow-xl">
       <div className="flex items-center gap-5 mb-5">
         <div>
           <FontAwesomeIcon

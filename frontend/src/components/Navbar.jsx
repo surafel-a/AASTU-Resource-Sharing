@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,7 +6,9 @@ import Logo from "./Logo";
 import { useState } from "react";
 
 const Navbar = () => {
-  const [active, setActive] = useState("home");
+  const { pathname } = useLocation();
+  const path = pathname.split("/")[1];
+  const [active, setActive] = useState(path);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
