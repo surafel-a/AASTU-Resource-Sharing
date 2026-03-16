@@ -53,7 +53,7 @@ const ResourceLibraries = ({
   const fileColors = getFileTypeColor();
 
   return (
-    <div className="relative bg-white  rounded-2xl border border-black/10 shadow-md">
+    <div className="relative bg-white border shadow-md rounded-2xl border-black/10">
       <div className="mx-8 my-6">
         <div>
           <FontAwesomeIcon
@@ -61,7 +61,7 @@ const ResourceLibraries = ({
             className={`p-3 text-3xl ${fileColors.bg} ${fileColors.icon} rounded-md mb-5`}
           />
           <button
-            className="absolute top-6 right-4 cursor-pointer"
+            className="absolute cursor-pointer top-6 right-4"
             onClick={() => setBookmarked(!bookmarked)}
           >
             <FontAwesomeIcon
@@ -70,12 +70,12 @@ const ResourceLibraries = ({
             />
           </button>
         </div>
-        <h2 className="font-bold text-2xl mb-2">{fileName}</h2>
-        <p className="font-bold text-black/30 mb-5">
+        <h2 className="mb-2 text-2xl font-bold">{fileName}</h2>
+        <p className="mb-5 font-bold text-black/30">
           By {lecturer} . {courseId}
         </p>
         {/* Details */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center justify-between mb-8">
           <p className="flex items-center gap-5 font-semibold text-black/30">
             {/* 1.2K */}
             <p className="flex items-center gap-1">

@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="flex justify-between items-center mt-2">
+    <nav className="flex items-center justify-between mt-2">
       <div>
         <Logo />
       </div>
@@ -24,7 +24,7 @@ const Navbar = () => {
           icon={faSearch}
         />
         <input
-          className="w-full pl-10 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           type="text"
@@ -32,7 +32,7 @@ const Navbar = () => {
         />
       </div>
 
-      <div className="flex gap-10 justify-center items-center">
+      <div className="flex items-center justify-center gap-10">
         <ul className="flex gap-5 py-5">
           <li
             className={`text-lg font-semibold cursor-pointer ${active === "home" ? "border-b-3 border-blue-500" : ""}`}
@@ -71,13 +71,13 @@ const Navbar = () => {
             Bookmarks
           </li>
         </ul>
-        <div className="flex gap-3 justify-center items-center">
+        <div className="flex items-center justify-center gap-3">
           <div>
             <h1 className="font-bold">Abebe Kebede</h1>
             <p>SE Student</p>
           </div>
           <button
-            className="rounded-full w-15 h-15 bg-green-400 cursor-pointer"
+            className="bg-green-400 rounded-full cursor-pointer w-15 h-15"
             onClick={() => navigate("/profile")}
           ></button>
         </div>
