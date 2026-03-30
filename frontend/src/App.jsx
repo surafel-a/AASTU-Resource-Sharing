@@ -21,14 +21,15 @@ import Settings from "./admin/Settings";
 
 const App = () => {
   return (
-    <BrowserRouter>  
+    <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         {/* User Routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+
           <Route path="/library" element={<Library />} />
           <Route path="/uploads" element={<MyUploads />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
@@ -44,7 +45,6 @@ const App = () => {
           <Route path="report-management" element={<ReportManagement />} />
           <Route path="settings" element={<Settings />} />
         </Route>
-        
       </Routes>
     </BrowserRouter>
   );

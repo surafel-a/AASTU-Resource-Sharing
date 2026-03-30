@@ -12,9 +12,20 @@ import { faClock } from "@fortawesome/free-regular-svg-icons";
 import DashboardOverview from "../components/admin/DashboardOverview";
 import FacultyMembers from "../components/admin/FacultyMembers";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+import { useResource } from "../contexts/ResourceContext";
+import { useUser } from "../contexts/UserContext";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { resources, loading: resourceLoading } = useResource();
+  const { users, loading: usersLoading } = useUser();
+
+  if (resourceLoading || usersLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="px-10 py-6">
@@ -44,7 +55,7 @@ const Dashboard = () => {
           iconSmall={faArrowTrendUp}
           iconDiscription="+12%"
           textTitle="Total Resources"
-          textValue="12,450"
+          textValue={resources.length}
           textDescription="Across 8 departments"
           colorPrimary="blue"
           colorSecondary="green"
@@ -64,7 +75,7 @@ const Dashboard = () => {
           iconSmall={faArrowTrendUp}
           iconDiscription="+18%"
           textTitle="Active Users"
-          textValue="3,210"
+          textValue={users.length}
           textDescription="Active in last 24 hours"
           colorPrimary="blue"
           colorSecondary="green"

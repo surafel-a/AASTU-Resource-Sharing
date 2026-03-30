@@ -11,7 +11,16 @@ import {
 import UserOverview from "../components/admin/UserOverview";
 import UserRow from "../components/admin/UserRow";
 
+import { useUser } from "../contexts/UserContext";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const UserManagement = () => {
+  const { users, loading: usersLoading } = useUser();
+
+  if (usersLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="px-10 py-6">
       <h1 className="text-3xl font-bold">User Management</h1>
@@ -28,7 +37,11 @@ const UserManagement = () => {
 
       {/* USER OVERVIEW */}
       <section className="grid grid-cols-3 gap-5 mb-8">
-        <UserOverview title="Total Users" value="1,240" description="+12%" />
+        <UserOverview
+          title="Total Users"
+          value={users.length}
+          description="+12%"
+        />
         <UserOverview
           title="Active Students"
           value="1,180"

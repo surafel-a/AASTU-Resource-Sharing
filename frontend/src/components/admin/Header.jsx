@@ -4,8 +4,11 @@ import {
   faBell,
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../contexts/UserContext";
 
 const Header = () => {
+  const { user } = useUser();
+
   return (
     <div className="flex items-center justify-between gap-10 px-6 py-2 border-b-3 border-black/15">
       <div className="relative flex-1">
@@ -34,7 +37,7 @@ const Header = () => {
         <div className="w-0.5 h-10 bg-gray-200 rounded-full"></div>
         <div className="flex items-center justify-center gap-3">
           <div>
-            <h1 className="font-bold text-end">Abebe Kebede</h1>
+            <h1 className="font-bold text-end">{user?.name}</h1>
             <p className="text-sm font-bold uppercase text-black/40">
               System Administrator
             </p>

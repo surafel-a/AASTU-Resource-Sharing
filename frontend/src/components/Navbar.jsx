@@ -4,8 +4,11 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "./Logo";
 import { useState } from "react";
+import { useUser } from "../contexts/UserContext";
+import { formatDepartment } from "../utilities/names";
 
 const Navbar = () => {
+  const { user } = useUser();
   const { pathname } = useLocation();
   const path = pathname.split("/")[1];
   const [active, setActive] = useState(path);
@@ -73,8 +76,8 @@ const Navbar = () => {
         </ul>
         <div className="flex items-center justify-center gap-3">
           <div>
-            <h1 className="font-bold">Abebe Kebede</h1>
-            <p>SE Student</p>
+            <h1 className="font-bold">{user?.name}</h1>
+            <p>{formatDepartment(user?.department)} Student</p>
           </div>
           <button
             className="bg-green-400 rounded-full cursor-pointer w-15 h-15"

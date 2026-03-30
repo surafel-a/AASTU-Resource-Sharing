@@ -10,12 +10,24 @@ import RecentUploads from "../components/RecentUploads";
 import welcomeImage from "../assets/welcomeImage.png";
 import ContinueReading from "../components/ContinueReading";
 
+import { useUser } from "../contexts/UserContext";
+import { splitName } from "../utilities/names";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const Home = () => {
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  const splitedName = splitName(user?.name);
+
   return (
     <div className="bg-[#F6F6F8] py-10">
       <div className="mx-50 flex gap-5 bg-[#1152D4] px-20 py-15 text-white rounded-2xl shadow-2xl">
         <div className="w-[60%] flex flex-col gap-5">
-          <h1 className="font-bold text-5xl">Welcome back, Abebe</h1>
+          <h1 className="font-bold text-5xl">Welcome back, {splitedName}</h1>
           <p className="text-xl">
             Ready to crush your Engineering exams? Find the latest lecture notes
             and past papers shared by your peers.

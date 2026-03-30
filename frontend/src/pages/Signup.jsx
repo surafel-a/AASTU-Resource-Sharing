@@ -28,32 +28,32 @@ export default function Signup() {
     try {
       await signup(formData);
       navigate("/");
-
     } catch (error) {
       console.log(error.response?.data || "Signup failed");
     }
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-4xl">
-        <button onClick={() => navigate("/")}
-          className="mb-6 text-blue-600 font-bold hover:underline cursor-pointer"
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
+      <div className="w-full max-w-4xl p-10 bg-white shadow-2xl rounded-2xl">
+        <button
+          onClick={() => navigate("/")}
+          className="mb-6 font-bold text-blue-600 cursor-pointer hover:underline"
         >
           &larr; Back to Home
         </button>
 
-        <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-800">
+        <h1 className="mb-4 text-4xl font-extrabold text-center text-gray-800">
           Create Account
         </h1>
-        <p className="text-lg text-gray-500 text-center mb-6">
+        <p className="mb-6 text-lg text-center text-gray-500">
           Sign up to get started
         </p>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="grid grid-cols-1 gap-8 md:grid-cols-2"
         >
           {/* LEFT COLUMN */}
           <div className="flex flex-col gap-6">
@@ -64,7 +64,7 @@ export default function Signup() {
               required
               value={formData.name}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
             <input
@@ -74,7 +74,7 @@ export default function Signup() {
               required
               value={formData.email}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             />
 
             <input
@@ -84,7 +84,7 @@ export default function Signup() {
               required
               value={formData.password}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             />
 
             <input
@@ -94,7 +94,7 @@ export default function Signup() {
               required
               value={formData.passwordConfirm}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function Signup() {
               required
               value={formData.universityId}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             />
 
             <input
@@ -117,7 +117,7 @@ export default function Signup() {
               required
               value={formData.phoneNumber}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             />
 
             <select
@@ -125,16 +125,26 @@ export default function Signup() {
               required
               value={formData.department}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             >
-              <option value="" disabled>Select Department</option>
-              <option value="Electrical Engineering">Electrical Engineering</option>
-              <option value="Electromechanical Engineering">Electromechanical Engineering</option>
-              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="" disabled>
+                Select Department
+              </option>
+              <option value="Electrical Engineering">
+                Electrical Engineering
+              </option>
+              <option value="Electromechanical Engineering">
+                Electromechanical Engineering
+              </option>
+              <option value="Mechanical Engineering">
+                Mechanical Engineering
+              </option>
               <option value="Civil Engineering">Civil Engineering</option>
               <option value="Chemical Engineering">Chemical Engineering</option>
               <option value="Software Engineering">Software Engineering</option>
-              <option value="Environmental Engineering">Environmental Engineering</option>
+              <option value="Environmental Engineering">
+                Environmental Engineering
+              </option>
               <option value="Architecture">Architecture</option>
               <option value="Mining Engineering">Mining Engineering</option>
               <option value="Biotechnology">Biotechnology</option>
@@ -146,9 +156,11 @@ export default function Signup() {
               required
               value={formData.yearOfStudy}
               onChange={handleChange}
-              className="border rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+              className="p-4 ring ring-gray-400 focus:outline-none rounded-xl focus:ring-2 focus:ring-blue-500"
             >
-              <option value="" disabled>Year of Study</option>
+              <option value="" disabled>
+                Year of Study
+              </option>
               <option value="1">1st Year</option>
               <option value="2">2nd Year</option>
               <option value="3">3rd Year</option>
@@ -161,17 +173,17 @@ export default function Signup() {
           {/* SUBMIT BUTTON - FULL WIDTH */}
           <button
             type="submit"
-            className="md:col-span-2 bg-blue-600 text-white py-4 rounded-xl text-xl font-semibold hover:bg-blue-700 transition cursor-pointer"
+            className="py-4 text-xl font-semibold text-white transition bg-blue-600 cursor-pointer md:col-span-2 rounded-xl hover:bg-blue-700"
           >
             Sign Up
           </button>
         </form>
 
-        <p className="mt-6 text-center text-lg text-gray-700">
+        <p className="mt-6 text-lg text-center text-gray-700">
           Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
-            className="text-blue-600 font-bold hover:underline cursor-pointer"
+            className="font-bold text-blue-600 cursor-pointer hover:underline"
           >
             Login
           </span>

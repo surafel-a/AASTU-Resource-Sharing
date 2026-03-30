@@ -14,7 +14,20 @@ import ResourceOverview from "../components/admin/ResourceOverview";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import ResourceData from "../components/admin/ResourceData";
 
+import { useResource } from "../contexts/ResourceContext";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const ResourceManagement = () => {
+  const {
+    resources,
+    getAllResources,
+    loading: resourceLoading,
+  } = useResource();
+
+  if (resourceLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="px-10 py-6">
       <h1 className="text-3xl font-bold">Manage Resources</h1>
@@ -35,7 +48,7 @@ const ResourceManagement = () => {
           iconSmall={faArrowTrendUp}
           iconDiscription="+12%"
           textTitle="Total Resources"
-          textValue="1,284"
+          textValue={resources.length}
           colorPrimary="blue"
           colorSecondary="green"
         />

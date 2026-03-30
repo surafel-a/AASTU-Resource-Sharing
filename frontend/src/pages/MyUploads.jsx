@@ -10,10 +10,51 @@ import {
   faMagnifyingGlass,
   faFilePdf,
   faDisplay,
+  faFileAlt,
+  faFileImage,
+  faFileVideo,
+  faFileWord,
 } from "@fortawesome/free-solid-svg-icons";
 import DataRow from "../components/DataRow";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+// CONTEXTS
+import { useResource } from "../contexts/ResourceContext";
+import { formatDate } from "../utilities/formatDate";
 
 const MyUploads = () => {
+  const { myResources, loading } = useResource();
+
+  const approvedCount = myResources.filter(
+    (res) => res.status === "approved",
+  ).length;
+  const pendingCount = myResources.filter(
+    (res) => res.status === "pending",
+  ).length;
+
+  const getFileIcon = (type) => {
+    switch (type?.toLowerCase()) {
+      case "pdf":
+        return faFilePdf;
+      case "doc":
+      case "docx":
+        return faFileWord;
+      case "jpg":
+      case "jpeg":
+      case "png":
+        return faFileImage;
+      case "mp4":
+      case "video":
+        return faFileVideo;
+      default:
+        return faFileAlt;
+    }
+  };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="bg-[#F6F6F8] py-10">
       <div className="mx-50">
@@ -37,7 +78,7 @@ const MyUploads = () => {
               Total Uploads
             </h2>
             <div className="flex items-center justify-between text-4xl font-bold">
-              <p className="">12</p>
+              <p className="">{myResources.length}</p>
               <FontAwesomeIcon icon={faFolder} className="text-blue-500" />
             </div>
           </div>
@@ -45,7 +86,7 @@ const MyUploads = () => {
           <div className="p-6 bg-white shadow-xl rounded-xl">
             <h2 className="mb-3 text-xl font-bold text-black/50">Approved</h2>
             <div className="flex items-center justify-between text-4xl font-bold">
-              <p className="text-green-600">8</p>
+              <p className="text-green-600">{approvedCount}</p>
               <FontAwesomeIcon
                 icon={faCircleCheck}
                 className="text-green-400"
@@ -56,7 +97,7 @@ const MyUploads = () => {
           <div className="p-6 bg-white shadow-xl rounded-xl">
             <h2 className="mb-3 text-xl font-bold text-black/50">Pending</h2>
             <div className="flex items-center justify-between text-4xl font-bold">
-              <p className="text-orange-600">3</p>
+              <p className="text-orange-600">{pendingCount}</p>
               <FontAwesomeIcon
                 icon={faHourglassHalf}
                 className="text-orange-400"
@@ -93,77 +134,68 @@ const MyUploads = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] items-center bg-white rounded-xl shadow-xl overflow-hidden">
-          {/* HEADER */}
-          <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-            Resource Name
-          </p>
-          <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-            Category
-          </p>
-          <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-            Date Uploaded
-          </p>
-          <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-            Status
-          </p>
-          <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-            Actions
-          </p>
+        {myResources.length === 0 ? (
+          <div className="py-20 text-center bg-white border-2 border-dashed border-black/20 rounded-xl">
+            <div className="mb-3 text-4xl">📁</div>
+            <p className="text-xl font-semibold text-black/60">
+              No uploads yet
+            </p>
+            <p className="text-black/40">
+              Your uploaded resources will appear here.
+            </p>
 
-          {/* DATA ROW */}
-          <DataRow
-            fileIcon={faFilePdf}
-            fileName="Fluid Mechanics - Final Review"
-            fileSize="2.4 MB"
-            fileType="PDF"
-            category="Exam Prep"
-            dateUploaded="Oct 12, 2023"
-            status="Approved"
-          />
-          <DataRow
-            fileIcon={faFileLines}
-            fileName="Thermodynamics Lab Report"
-            fileSize="1.1 MB"
-            fileType="DOCX"
-            category="Templates"
-            dateUploaded="Yesterday"
-            status="Pending"
-          />
-          <DataRow
-            fileIcon={faDisplay}
-            fileName="Intro to Robotics"
-            fileSize="12.8 MB"
-            fileType="PPTX"
-            category="Lecture Notes"
-            dateUploaded="Oct 05, 2023"
-            status="Rejected"
-          />
-          <DataRow
-            fileIcon={faFilePdf}
-            fileName="Calculus III Cheat Sheet"
-            fileSize="450 KB"
-            fileType="PDF"
-            category="Summary"
-            dateUploaded="Sep 28, 2023"
-            status="Approved"
-          />
-
-          {/* FOOTER */}
-          <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-5">
-            <p>Showing 4 of 12 resources</p>
-            <button>
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className="cursor-pointer text-black/30"
-              />
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="cursor-pointer"
-              />
+            <button className="px-6 py-2 bg-[#1152D4] text-white rounded-lg font-semibold hover:bg-blue-700 hover:scale-105 transition-all duration-200 mt-5 cursor-pointer">
+              Upload Resource
             </button>
           </div>
-        </section>
+        ) : (
+          <section className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] items-center bg-white rounded-xl shadow-xl overflow-hidden">
+            {/* HEADER */}
+            <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
+              Resource Name
+            </p>
+            <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
+              Category
+            </p>
+            <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
+              Date Uploaded
+            </p>
+            <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
+              Status
+            </p>
+            <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
+              Actions
+            </p>
+
+            {myResources.map((myResource) => (
+              <DataRow
+                key={myResource._id}
+                fileIcon={getFileIcon(myResource.type)}
+                fileName={myResource.title}
+                fileSize="12 MB"
+                fileType={myResource.type}
+                category={myResource.category}
+                dateUploaded={formatDate(myResource.createdAt)}
+                status={myResource.status}
+              />
+            ))}
+
+            {/* FOOTER */}
+            <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-5">
+              <p>Showing 4 of 12 resources</p>
+              <button>
+                <FontAwesomeIcon
+                  icon={faChevronLeft}
+                  className="cursor-pointer text-black/30"
+                />
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  className="cursor-pointer"
+                />
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -1,30 +1,45 @@
-import logo from '../../assets/Logo.svg';
+import logo from "../../assets/Logo.svg";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faChartLine,    // Analytics
-  faCheckCircle,  // Approvals
-  faUsers,        // Users
+import {
+  faChartLine, // Analytics
+  faCheckCircle, // Approvals
+  faUsers, // Users
   faFolderOpen,
-  faFileAlt,       // Reports
-  faSignOutAlt
+  faFileAlt, // Reports
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    }
+  };
+
   return (
     <div className="flex flex-col h-full row-span-2 p-4 border-r-3 border-black/15">
-      <div className='flex items-center gap-2'>
-        <img className='text-black' src={logo} alt="Logo"/>
-        <div className='font-bold'>
-          <h1 className='text-xl'>AASTU Admin</h1>
-          <p className='text-black/50'>Resource Platform</p>
+      <div className="flex items-center gap-2">
+        <img className="text-black" src={logo} alt="Logo" />
+        <div className="font-bold">
+          <h1 className="text-xl">AASTU Admin</h1>
+          <p className="text-black/50">Resource Platform</p>
         </div>
       </div>
 
-      <div className='flex flex-col gap-4 mt-10'>
-        
-        <NavLink to="dashboard"
+      <div className="flex flex-col gap-4 mt-10">
+        <NavLink
+          to="dashboard"
           className={({ isActive }) =>
             `flex items-center gap-2 px-4 py-2 text-xl font-semibold rounded-lg cursor-pointer 
             ${isActive ? "bg-[#1152D4] text-white" : "text-black/60"}`
@@ -34,7 +49,8 @@ const Sidebar = () => {
           <p>Analytics</p>
         </NavLink>
 
-        <NavLink to="approvals"
+        <NavLink
+          to="approvals"
           className={({ isActive }) =>
             `flex items-center gap-2 px-4 py-2 text-xl font-semibold rounded-lg cursor-pointer 
             ${isActive ? "bg-[#1152D4] text-white" : "text-black/60"}`
@@ -44,7 +60,8 @@ const Sidebar = () => {
           <p>Approvals</p>
         </NavLink>
 
-        <NavLink to="resource-management"
+        <NavLink
+          to="resource-management"
           className={({ isActive }) =>
             `flex items-center gap-2 px-4 py-2 text-xl font-semibold rounded-lg cursor-pointer 
             ${isActive ? "bg-[#1152D4] text-white" : "text-black/60"}`
@@ -54,7 +71,8 @@ const Sidebar = () => {
           <p>Resources</p>
         </NavLink>
 
-        <NavLink to="user-management"
+        <NavLink
+          to="user-management"
           className={({ isActive }) =>
             `flex items-center gap-2 px-4 py-2 text-xl font-semibold rounded-lg cursor-pointer 
             ${isActive ? "bg-[#1152D4] text-white" : "text-black/60"}`
@@ -64,7 +82,8 @@ const Sidebar = () => {
           <p>Users</p>
         </NavLink>
 
-        <NavLink to="report-management"
+        <NavLink
+          to="report-management"
           className={({ isActive }) =>
             `flex items-center gap-2 px-4 py-2 text-xl font-semibold rounded-lg cursor-pointer 
             ${isActive ? "bg-[#1152D4] text-white" : "text-black/60"}`
@@ -73,15 +92,17 @@ const Sidebar = () => {
           <FontAwesomeIcon icon={faFileAlt} />
           <p>Reports</p>
         </NavLink>
-        
       </div>
 
-      <div className='flex items-center justify-center w-full gap-1 py-2 mt-auto text-xl font-semibold border-2 rounded-lg cursor-pointer r border-black/20'>
+      <div
+        className="flex items-center justify-center w-full gap-1 py-2 mt-auto text-xl font-semibold border-2 rounded-lg cursor-pointer r border-black/20"
+        onClick={handleLogout}
+      >
         <FontAwesomeIcon icon={faSignOutAlt} />
         <p>Logout</p>
-      </div>       
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
