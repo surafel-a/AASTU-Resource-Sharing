@@ -29,7 +29,7 @@ const Navbar = () => {
   })?.name;
 
   return (
-    <nav className="flex items-center justify-between mt-2">
+    <nav className="flex items-center justify-between mt-2 ">
       {/* Logo */}
       <div>
         <Logo />

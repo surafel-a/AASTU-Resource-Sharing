@@ -10,89 +10,89 @@ export const createCourse = async (req, res, next) => {
       department: req.body.department,
       courseInstructor: req.body.courseInstructor,
       year: req.body.year,
-      semester: req.body.semester
+      semester: req.body.semester,
     });
 
     res.status(201).json({
-      status: 'success',
-      data: { 
-        course: newCourse 
-      }
+      status: "success",
+      data: {
+        course: newCourse,
+      },
     });
-    
   } catch (error) {
-    return next(new AppError('Failed to create course', 500));
+    return next(new AppError("Failed to create course", 500));
   }
-}
+};
 
 export const getAllCourses = async (req, res, next) => {
   try {
-    const features = new APIFeatures(Course.find(), req.query).filter().sort().limitFields().paginate();
+    const features = new APIFeatures(Course.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
     const courses = await features.query;
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       results: courses.length,
-      data: { courses }
-    })
-    
+      data: { courses },
+    });
   } catch (error) {
-    return next(new AppError('Failed to get courses', 500));
+    return next(new AppError("Failed to get courses", 500));
   }
-}
+};
 
 export const getCourseById = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
 
-    if(!course){
-      return next(new AppError('No course found with that ID', 404));
+    if (!course) {
+      return next(new AppError("No course found with that ID", 404));
     }
 
     res.status(200).json({
-      status: 'success',
-      data: { course }
+      status: "success",
+      data: { course },
     });
-    
   } catch (error) {
-    return next(new AppError('Failed to get courses', 500));
+    return next(new AppError("Failed to get courses", 500));
   }
-}
+};
 
 export const updateCourseById = async (req, res, next) => {
   try {
-    const course = await Course.findByIdAndUpdate(req.params.id, req.body, { 
-      new: true, runValidators: true
+    const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
     });
 
-    if(!course){
-      return next(new AppError('No course found with that ID', 404));
+    if (!course) {
+      return next(new AppError("No course found with that ID", 404));
     }
 
     res.status(200).json({
-      status: 'success',
-      data: { course }
+      status: "success",
+      data: { course },
     });
-    
   } catch (error) {
-    return next(new AppError('Failed to get courses', 500));
+    return next(new AppError("Failed to get courses", 500));
   }
-}
+};
 
 export const deleteCourseById = async (req, res, next) => {
   try {
     const course = await Course.findByIdAndDelete(req.params.id);
 
-    if(!course){
-      return next(new AppError('No course found with that ID', 404));
+    if (!course) {
+      return next(new AppError("No course found with that ID", 404));
     }
 
     res.status(204).json({
-      status: 'succcess',
-      data: null
-    })
-    
+      status: "succcess",
+      data: null,
+    });
   } catch (error) {
-    return next(new AppError('Failed to get courses', 500));
+    return next(new AppError("Failed to get courses", 500));
   }
-}
+};

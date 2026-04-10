@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useBookmark } from "../contexts/BookmarkContext";
 
 const ResourceLibraries = ({
+  resourceId,
   fileIcon,
   fileName,
   fileType,
@@ -13,8 +15,9 @@ const ResourceLibraries = ({
   courseId,
   downloads,
   year,
+  isBookmarked,
+  onBookmarkToggle,
 }) => {
-  const [bookmarked, setBookmarked] = useState(false);
   const getFileTypeColor = () => {
     const type = fileType.toLowerCase();
 
@@ -26,7 +29,7 @@ const ResourceLibraries = ({
       };
     }
 
-    if (type === "docx" || type === "word") {
+    if (type === "docx" || type === "word" || type === "doc") {
       return {
         bg: "bg-green-100",
         text: "text-green-700",
@@ -62,11 +65,11 @@ const ResourceLibraries = ({
           />
           <button
             className="absolute cursor-pointer top-6 right-4"
-            onClick={() => setBookmarked(!bookmarked)}
+            onClick={() => onBookmarkToggle(resourceId)}
           >
             <FontAwesomeIcon
-              icon={bookmarked ? bookmarkIconS : bookmarkIconR}
-              className={`${bookmarked ? "text-blue-900" : "text-gray-400"} text-2xl`}
+              icon={isBookmarked ? bookmarkIconS : bookmarkIconR}
+              className={`${isBookmarked ? "text-blue-900" : "text-gray-400"} text-2xl`}
             />
           </button>
         </div>
@@ -89,7 +92,7 @@ const ResourceLibraries = ({
             </p>
           </p>
           <p
-            className={`${fileColors.bg} ${fileColors.icon} font-bold px-4 py-1 rounded-md`}
+            className={`${fileColors.bg} ${fileColors.icon} font-bold px-4 py-1 rounded-md uppercase`}
           >
             {fileType}
           </p>

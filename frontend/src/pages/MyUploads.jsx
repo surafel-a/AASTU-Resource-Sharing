@@ -56,7 +56,7 @@ const MyUploads = () => {
   }
 
   return (
-    <div className="bg-[#F6F6F8] py-10">
+    <div className="bg-[#F6F6F8] h-full py-10">
       <div className="mx-50">
         <h1 className="mb-5 text-5xl font-bold">My Uploads</h1>
         <div className="flex items-center justify-between mb-5">

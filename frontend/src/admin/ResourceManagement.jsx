@@ -18,11 +18,7 @@ import { useResource } from "../contexts/ResourceContext";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const ResourceManagement = () => {
-  const {
-    resources,
-    getAllResources,
-    loading: resourceLoading,
-  } = useResource();
+  const { resources, loading: resourceLoading } = useResource();
 
   if (resourceLoading) {
     return <LoadingSpinner />;
