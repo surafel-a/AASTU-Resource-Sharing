@@ -46,6 +46,11 @@ export function UserProvider({ children }) {
       const { data } = await axios.patch(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/me`,
         updates,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
 
       setUser(data.users);

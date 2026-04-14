@@ -21,9 +21,11 @@ import LoadingSpinner from "../components/LoadingSpinner";
 // CONTEXTS
 import { useResource } from "../contexts/ResourceContext";
 import { formatDate } from "../utilities/formatDate";
+import { useState } from "react";
 
 const MyUploads = () => {
   const { myResources, loading } = useResource();
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const approvedCount = myResources.filter(
     (res) => res.status === "approved",
@@ -31,6 +33,16 @@ const MyUploads = () => {
   const pendingCount = myResources.filter(
     (res) => res.status === "pending",
   ).length;
+
+  const getFilterClass = (filter) =>
+    activeFilter === filter
+      ? "px-6 py-2 bg-[#1152D4] text-white rounded-4xl cursor-pointer transition-all duration-200"
+      : "px-6 py-2 bg-[#e4e4e9] rounded-4xl cursor-pointer transition-all duration-200";
+
+  const filteredResources =
+    activeFilter === "all"
+      ? myResources
+      : myResources.filter((r) => r.status === activeFilter);
 
   const getFileIcon = (type) => {
     switch (type?.toLowerCase()) {
@@ -56,7 +68,7 @@ const MyUploads = () => {
   }
 
   return (
-    <div className="bg-[#F6F6F8] h-full py-10">
+    <div className="bg-[#F6F6F8] min-h-screen py-10">
       <div className="mx-50">
         <h1 className="mb-5 text-5xl font-bold">My Uploads</h1>
         <div className="flex items-center justify-between mb-5">
@@ -119,22 +131,34 @@ const MyUploads = () => {
             />
           </div>
           <div className="flex items-center gap-2 font-bold">
-            <p className="px-6 py-2 bg-[#1152D4] text-white rounded-4xl cursor-pointer">
+            <p
+              onClick={() => setActiveFilter("all")}
+              className={getFilterClass("all")}
+            >
               All
             </p>
-            <p className="px-6 py-2 bg-[#e4e4e9] rounded-4xl cursor-pointer">
+            <p
+              onClick={() => setActiveFilter("approved")}
+              className={getFilterClass("approved")}
+            >
               Approved
             </p>
-            <p className="px-6 py-2 bg-[#e4e4e9] rounded-4xl cursor-pointer">
+            <p
+              onClick={() => setActiveFilter("pending")}
+              className={getFilterClass("pending")}
+            >
               Pending
             </p>
-            <p className="px-6 py-2 bg-[#e4e4e9] rounded-4xl cursor-pointer">
+            <p
+              onClick={() => setActiveFilter("rejected")}
+              className={getFilterClass("rejected")}
+            >
               Rejected
             </p>
           </div>
         </section>
 
-        {myResources.length === 0 ? (
+        {filteredResources.length === 0 ? (
           <div className="py-20 text-center bg-white border-2 border-dashed border-black/20 rounded-xl">
             <div className="mb-3 text-4xl">📁</div>
             <p className="text-xl font-semibold text-black/60">
@@ -167,7 +191,7 @@ const MyUploads = () => {
               Actions
             </p>
 
-            {myResources.map((myResource) => (
+            {filteredResources.map((myResource) => (
               <DataRow
                 key={myResource._id}
                 fileIcon={getFileIcon(myResource.type)}

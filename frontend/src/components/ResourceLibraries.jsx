@@ -79,7 +79,7 @@ const ResourceLibraries = ({
         </p>
         {/* Details */}
         <div className="flex items-center justify-between mb-8">
-          <p className="flex items-center gap-5 font-semibold text-black/30">
+          <div className="flex items-center gap-5 font-semibold text-black/30">
             {/* 1.2K */}
             <p className="flex items-center gap-1">
               <FontAwesomeIcon icon={downloadIcon} />
@@ -90,7 +90,7 @@ const ResourceLibraries = ({
               <FontAwesomeIcon icon={calanderIcon} />
               <span>{year}</span>
             </p>
-          </p>
+          </div>
           <p
             className={`${fileColors.bg} ${fileColors.icon} font-bold px-4 py-1 rounded-md uppercase`}
           >

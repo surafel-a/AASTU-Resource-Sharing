@@ -73,9 +73,15 @@ const Navbar = () => {
             <p>{formatDepartment(user?.department)} Student</p>
           </div>
           <button
-            className="w-12 h-12 bg-green-400 rounded-full cursor-pointer"
+            className="w-12 h-12 bg-gray-300 rounded-full cursor-pointer"
             onClick={() => navigate("/profile")}
-          ></button>
+          >
+            <img
+              src={user?.photo || "/default-avatar.png"}
+              alt="Profile"
+              className="w-full h-full object-cover rounded-xl"
+            />
+          </button>
         </div>
       </div>
     </nav>

@@ -10,24 +10,46 @@ import RecentUploads from "../components/RecentUploads";
 import welcomeImage from "../assets/welcomeImage.png";
 import ContinueReading from "../components/ContinueReading";
 
-import { useUser } from "../contexts/UserContext";
 import { splitName } from "../utilities/names";
 import LoadingSpinner from "../components/LoadingSpinner";
-
 import { useNavigate } from "react-router-dom";
 
+// CONTEXtS
+import { useUser } from "../contexts/UserContext";
+import { useResource } from "../contexts/ResourceContext";
+
 const Home = () => {
-  const { user, loading } = useUser();
+  const { user, loading: userLoading } = useUser();
+  const { resources, loading: resourceLoading } = useResource();
   const navigate = useNavigate();
 
-  if (loading) {
+  if (userLoading || resourceLoading) {
     return <LoadingSpinner />;
   }
 
   const splitedName = splitName(user?.name);
 
+  const getFileIcon = (type) => {
+    switch (type?.toLowerCase()) {
+      case "pdf":
+        return faFilePdf;
+      case "doc":
+      case "docx":
+        return faFileWord;
+      case "jpg":
+      case "jpeg":
+      case "png":
+        return faFileImage;
+      case "mp4":
+      case "video":
+        return faFileVideo;
+      default:
+        return faFileAlt;
+    }
+  };
+
   return (
-    <div className="bg-[#F6F6F8] py-10">
+    <div className="bg-[#F6F6F8] min-h-screen py-10">
       <div className="mx-50 flex gap-5 bg-[#1152D4] px-20 py-15 text-white rounded-2xl shadow-2xl">
         <div className="w-[60%] flex flex-col gap-5">
           <h1 className="text-5xl font-bold">Welcome back, {splitedName}</h1>
@@ -68,38 +90,17 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-5 rounded-xl">
-            <RecentUploads
-              icon={faFilePdf}
-              course="Applied Mathematics III"
-              department="Freshman Department"
-              views="1.2K"
-              downloads="450"
-              fileExtension="PDF"
-            />
-            <RecentUploads
-              icon={faFileWord}
-              course="Database System"
-              department="Software Engineering"
-              views="850"
-              downloads="120"
-              fileExtension="DOCX"
-            />
-            <RecentUploads
-              icon={faFilePdf}
-              course="Applied Mathematics III"
-              department="Freshman Department"
-              views="1.2K"
-              downloads="450"
-              fileExtension="PDF"
-            />
-            <RecentUploads
-              icon={faFileWord}
-              course="Database System"
-              department="Software Engineering"
-              views="850"
-              downloads="120"
-              fileExtension="DOCX"
-            />
+            {resources.slice(0, 4).map((resource) => (
+              <RecentUploads
+                key={resource._id}
+                icon={getFileIcon(resource.type)}
+                course={resource.title}
+                department={resource.department}
+                views={resource.views}
+                downloads={resource.downloads}
+                fileExtension={resource.type}
+              />
+            ))}
           </div>
         </div>
 

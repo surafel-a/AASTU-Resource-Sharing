@@ -38,7 +38,7 @@ const RecentUploads = ({
               <span>{downloads}</span>
             </p>
           </div>
-          <p className="bg-[#e4e4ee] font-semibold px-4 py-1 rounded-md">
+          <p className="bg-[#e4e4ee] font-semibold px-4 py-1 rounded-md uppercase">
             {fileExtension}
           </p>
         </div>

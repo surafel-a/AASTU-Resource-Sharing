@@ -15,6 +15,8 @@ import { formatDate } from "../utilities/formatDate";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const Profile = () => {
+  const [profileImage, setProfileImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const { user, updateUser, loading } = useUser();
   const [form, setForm] = useState({
     name: "",
@@ -51,13 +53,21 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      await updateUser({
-        name: form.name,
-        universityId: form.universityId,
-        email: form.email,
-        department: form.department,
-        phoneNumber: form.phoneNumber,
-      });
+      const formData = new FormData();
+
+      // text fields
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("department", form.department);
+      formData.append("phoneNumber", form.phoneNumber);
+
+      // (must match backend multer)
+      if (profileImage) {
+        formData.append("photo", profileImage);
+      }
+
+      await updateUser(formData);
+
       toast.success("Profile updated successfully!");
     } catch (err) {
       toast.error(err.response?.data?.msg || "Failed to update profile");
@@ -77,7 +87,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-[#F6F6F8] py-10">
+    <div className="bg-[#F6F6F8] min-h-screen py-10">
       <div className="mx-50">
         <h1 className="mb-5 text-5xl font-bold">My Profile</h1>
         <p className="text-2xl font-semibold text-black/50">
@@ -116,15 +126,46 @@ const Profile = () => {
 
           {/* PROFILE */}
           <div className="absolute top-18 left-10 bg-white shadow-2xl h-40 w-40 p-1.5 rounded-xl">
-            <div className="bg-[#F2E7E3] w-full h-full rounded-xl"></div>
+            <img
+              src={preview || user?.photo || "/default-avatar.png"}
+              alt="Profile"
+              className="w-full h-full object-cover rounded-xl"
+            />
           </div>
           <div className="absolute top-49.5 left-40">
             <FontAwesomeIcon
               icon={faCamera}
               className="text-white p-1.5 rounded-md bg-[#1152D4] cursor-pointer"
+              onClick={() => document.getElementById("profileUpload").click()}
             />
           </div>
         </section>
+
+        <input
+          type="file"
+          accept="image/*"
+          id="profileUpload"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            // optional validation
+            if (!file.type.startsWith("image/")) {
+              toast.error("Only image files allowed");
+              return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+              toast.error("Max size is 2MB");
+              return;
+            }
+
+            setProfileImage(file);
+            setPreview(URL.createObjectURL(file));
+          }}
+        />
 
         <div className="flex items-center gap-5">
           {/* PERSONAL DETAILS */}

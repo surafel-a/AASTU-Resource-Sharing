@@ -1,5 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCross,
+  faEllipsisVertical,
+  faPen,
+  faTimes,
+  faTrash,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 const DataRow = ({
   fileIcon,
@@ -10,6 +18,7 @@ const DataRow = ({
   dateUploaded,
   status,
 }) => {
+  const [open, setOpen] = useState(false);
   const statusStyles = {
     approved: "text-green-600 bg-green-100",
     pending: "text-blue-600 bg-blue-100",
@@ -59,9 +68,33 @@ const DataRow = ({
           <span className="">.</span> {status}
         </p>
       </div>
-      <button className="p-6 cursor-pointer">
-        <FontAwesomeIcon icon={faEllipsisVertical} />
+
+      <button className="p-6 w-[120px] flex justify-end">
+        {!open ? (
+          <FontAwesomeIcon
+            onClick={() => setOpen(true)}
+            className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+            icon={faEllipsisVertical}
+          />
+        ) : (
+          <div className="flex items-center text-black/50 bg-white rounded-lg">
+            <FontAwesomeIcon
+              icon={faPen}
+              className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
+            />
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
+            />
+            <FontAwesomeIcon
+              icon={faXmark}
+              onClick={() => setOpen(false)}
+              className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+            />
+          </div>
+        )}
       </button>
+
       <div className="border border-black/10 col-span-5"></div>
     </>
   );
