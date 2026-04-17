@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // USER SIDE
+import Courses from "./pages/Courses";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Library from "./pages/Library";
@@ -10,14 +11,15 @@ import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import UploadResource from "./pages/UploadResource";
 
 // ADMIN SIDE
+import Settings from "./admin/Settings";
 import Dashboard from "./admin/Dashboard";
 import Approvals from "./admin/Approvals";
 import UserManagement from "./admin/UserManagement";
 import ResourceManagement from "./admin/ResourceManagement";
 import ReportManagement from "./admin/ReportManagement";
-import Settings from "./admin/Settings";
 
 const App = () => {
   return (
@@ -31,9 +33,11 @@ const App = () => {
           <Route path="/" element={<Home />} />
 
           <Route path="/library" element={<Library />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/uploads" element={<MyUploads />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/upload-resource" element={<UploadResource />} />
         </Route>
 
         {/* Admin Routes */}

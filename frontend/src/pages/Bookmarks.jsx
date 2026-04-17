@@ -19,9 +19,9 @@ const Bookmarks = () => {
 
   const filters = [
     { label: "All Items", value: "all" },
-    { label: "Lecture Notes", value: "notes" },
+    { label: "Lecture Notes", value: "note" },
     { label: "PDF Textbooks", value: "pdf" },
-    { label: "Video Tutorials", value: "video" },
+    { label: "Tests / Exams", value: "test" },
   ];
 
   return (

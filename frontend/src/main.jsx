@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { UserProvider } from "./contexts/UserContext.jsx";
 import { ResourceProvider } from "./contexts/ResourceContext.jsx";
 import { BookmarkProvider } from "./contexts/BookmarkContext.jsx";
+import { CourseProvider } from "./contexts/CourseContext.jsx";
 
 // Toast notifications
 import { ToastContainer } from "react-toastify";
@@ -17,12 +18,14 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <UserProvider>
-        <ResourceProvider>
-          <BookmarkProvider>
-            <App />
-            <ToastContainer position="top-right" autoClose={3000} />
-          </BookmarkProvider>
-        </ResourceProvider>
+        <CourseProvider>
+          <ResourceProvider>
+            <BookmarkProvider>
+              <App />
+              <ToastContainer position="top-right" autoClose={3000} />
+            </BookmarkProvider>
+          </ResourceProvider>
+        </CourseProvider>
       </UserProvider>
     </AuthProvider>
   </StrictMode>,

@@ -7,7 +7,7 @@ export const BookmarkProvider = ({ children }) => {
   // BASE URL
   const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-  // States
+  // STATES
   const [myBookmarks, setMyBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -47,15 +47,6 @@ export const BookmarkProvider = ({ children }) => {
       await axios.delete(`${BASE_URL}/api/v1/bookmarks/${resourceId}`, {
         withCredentials: true,
       });
-
-      // setMyBookmarks((prev) =>
-      //   prev.filter((b) => {
-      //     const id =
-      //       typeof b.resource === "object" ? b.resource._id : b.resource;
-
-      //     return String(id) !== String(resourceId);
-      //   }),
-      // );
 
       setMyBookmarks((prev) =>
         prev.filter(

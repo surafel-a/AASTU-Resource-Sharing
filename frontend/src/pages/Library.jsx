@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookmark as faBookmarkSolid,
@@ -18,6 +19,7 @@ import { useBookmark } from "../contexts/BookmarkContext";
 import { useResource } from "../contexts/ResourceContext";
 
 const Library = () => {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     department: "",
     courseCode: "",
@@ -59,7 +61,8 @@ const Library = () => {
     return resources.filter((resource) => {
       const departmentMatch =
         !filters.department ||
-        resource.course.department === filters.department;
+        resource.department.split(" ")[0].toLowerCase() ===
+          filters.department.toLowerCase();
 
       const courseMatch =
         !filters.courseCode || resource.course.code === filters.courseCode;
@@ -168,6 +171,13 @@ const Library = () => {
               Clear Filters
             </p>
           </div>
+
+          <p
+            onClick={() => navigate("/courses")}
+            className="text-lg font-bold text-blue-600 capitalize cursor-pointer pl-7"
+          >
+            See All Courses
+          </p>
         </div>
 
         {/* Library Container */}
