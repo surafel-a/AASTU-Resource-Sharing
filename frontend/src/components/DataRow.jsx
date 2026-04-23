@@ -43,8 +43,8 @@ const DataRow = ({
           />
         </div>
         <div>
-          <h2 className="font-bold text-xl">{fileName}</h2>
-          <div className="flex items-center gap-2 font-semibold text-lg text-black/50">
+          <h2 className="text-xl font-bold">{fileName}</h2>
+          <div className="flex items-center gap-2 text-lg font-semibold text-black/50">
             <p>{fileSize}</p>
             <p>. {fileType}</p>
           </div>
@@ -57,7 +57,7 @@ const DataRow = ({
         </p>
       </div>
 
-      <p className="inline font-bold text-xl text-black/50 p-6">
+      <p className="inline p-6 text-xl font-bold text-black/50">
         {dateUploaded}
       </p>
 
@@ -77,7 +77,7 @@ const DataRow = ({
             icon={faEllipsisVertical}
           />
         ) : (
-          <div className="flex items-center text-black/50 bg-white rounded-lg">
+          <div className="flex items-center bg-white rounded-lg text-black/50">
             <FontAwesomeIcon
               icon={faPen}
               className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
@@ -95,7 +95,7 @@ const DataRow = ({
         )}
       </button>
 
-      <div className="border border-black/10 col-span-5"></div>
+      <div className="col-span-5 border border-black/10"></div>
     </>
   );
 };

@@ -4,9 +4,13 @@ import {
   faEllipsisVertical,
   faGraduationCap,
   faLayerGroup,
+  faPen,
+  faTrash,
   faUsers,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 const CourseLists = ({
   courseCode,
@@ -16,6 +20,8 @@ const CourseLists = ({
   year,
   semester,
 }) => {
+  const [open, setOpen] = useState(false);
+
   switch (year) {
     case "1":
       year = "1st";
@@ -36,15 +42,41 @@ const CourseLists = ({
   semester = semester === 1 ? "1st" : "2nd";
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl">
+    <div className="relative p-6 bg-white rounded-lg shadow-xl">
       <div className="flex items-center justify-between mb-2">
         <p className="px-2 py-1 font-bold text-blue-600 bg-blue-100 rounded-md ">
           {courseCode}
         </p>
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon={faEllipsisVertical}
           className="p-2 rounded-full hover:bg-[#F6F6F8] cursor-pointer"
-        />
+        /> */}
+
+        <button className="absolute top-0 right-0 p-6 w-[120px] flex justify-end">
+          {!open ? (
+            <FontAwesomeIcon
+              onClick={() => setOpen(true)}
+              className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+              icon={faEllipsisVertical}
+            />
+          ) : (
+            <div className="flex flex-col items-center bg-white rounded-lg text-black/50">
+              <FontAwesomeIcon
+                icon={faXmark}
+                onClick={() => setOpen(false)}
+                className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+              />
+              <FontAwesomeIcon
+                icon={faPen}
+                className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
+              />
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
+              />
+            </div>
+          )}
+        </button>
       </div>
 
       <h2 className="mb-4 text-xl font-bold">{courseName}</h2>

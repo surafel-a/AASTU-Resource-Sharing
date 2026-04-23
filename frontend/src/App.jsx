@@ -21,6 +21,9 @@ import UserManagement from "./admin/UserManagement";
 import ResourceManagement from "./admin/ResourceManagement";
 import ReportManagement from "./admin/ReportManagement";
 
+import CourseLayout from "./layouts/CourseLayout";
+import AddCourse from "./pages/AddCourse";
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -33,7 +36,11 @@ const App = () => {
           <Route path="/" element={<Home />} />
 
           <Route path="/library" element={<Library />} />
-          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses" element={<CourseLayout />}>
+            <Route index element={<Courses />} />
+            <Route path="add" element={<AddCourse />} />
+            <Route path=":courseId" element={<AddCourse />} />
+          </Route>
           <Route path="/uploads" element={<MyUploads />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/profile" element={<Profile />} />

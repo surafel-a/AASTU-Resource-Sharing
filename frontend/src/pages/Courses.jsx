@@ -13,15 +13,16 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useGoBack from "../hooks/useGoBack";
 import CourseLists from "../components/CourseLists";
 import { useCourse } from "../contexts/CourseContext";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useMemo, useState } from "react";
+import GoBackButton from "../components/GoBackButton";
+import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
-  const goBack = useGoBack();
   const { courses, loading } = useCourse();
+  const navigate = useNavigate();
 
   const departmentOptions = [
     ...new Set(courses.map((course) => course.department)),
@@ -68,13 +69,7 @@ const Courses = () => {
   return (
     <div className="bg-[#F6F6F8] min-h-screen py-10">
       <div className="mx-50">
-        <div
-          onClick={() => goBack()}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#FFD700]  to-[#FFFF00] text-[#4E342E] text- rounded-full cursor-pointer mb-5"
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-          <p className="text-lg font-bold capitalize">Go back</p>
-        </div>
+        <GoBackButton />
 
         <h1 className="mb-5 text-5xl font-bold">Courses</h1>
         <div className="flex items-center justify-between mb-5">
@@ -82,10 +77,11 @@ const Courses = () => {
             Browse and manage all departments and courses
           </p>
 
-          <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1152D4] text-white text-xl font-semibold cursor-pointer">
-            <div>
-              <FontAwesomeIcon icon={faPlus} className="" />
-            </div>
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1152D4] text-white text-xl font-semibold cursor-pointer"
+            onClick={() => navigate("/courses/add")}
+          >
+            <FontAwesomeIcon icon={faPlus} className="" />
             <p className="capitalize">Add new course</p>
           </div>
         </div>
