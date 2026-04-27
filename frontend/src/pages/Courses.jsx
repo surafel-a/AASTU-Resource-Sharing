@@ -176,6 +176,7 @@ const Courses = () => {
             filteredCourses.map((course) => (
               <CourseLists
                 key={course._id}
+                courseId={course._id}
                 courseCode={course.code}
                 courseName={course.name}
                 courseInstructor={course.courseInstructor}

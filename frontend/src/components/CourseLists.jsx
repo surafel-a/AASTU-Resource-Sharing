@@ -11,8 +11,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCourse } from "../contexts/CourseContext";
 
 const CourseLists = ({
+  courseId,
   courseCode,
   courseName,
   courseInstructor,
@@ -21,6 +24,9 @@ const CourseLists = ({
   semester,
 }) => {
   const [open, setOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const { deleteCourse } = useCourse();
+  const navigate = useNavigate();
 
   switch (year) {
     case "1":
@@ -41,16 +47,18 @@ const CourseLists = ({
 
   semester = semester === 1 ? "1st" : "2nd";
 
+  const handleDelete = () => {
+    deleteCourse(courseId);
+
+    setShowConfirm(false);
+  };
+
   return (
     <div className="relative p-6 bg-white rounded-lg shadow-xl">
       <div className="flex items-center justify-between mb-2">
         <p className="px-2 py-1 font-bold text-blue-600 bg-blue-100 rounded-md ">
           {courseCode}
         </p>
-        {/* <FontAwesomeIcon
-          icon={faEllipsisVertical}
-          className="p-2 rounded-full hover:bg-[#F6F6F8] cursor-pointer"
-        /> */}
 
         <button className="absolute top-0 right-0 p-6 w-[120px] flex justify-end">
           {!open ? (
@@ -67,11 +75,13 @@ const CourseLists = ({
                 className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
               />
               <FontAwesomeIcon
+                onClick={() => navigate(`${courseId}/edit`)}
                 icon={faPen}
                 className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
               />
               <FontAwesomeIcon
                 icon={faTrash}
+                onClick={() => setShowConfirm(true)}
                 className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
               />
             </div>
@@ -112,6 +122,33 @@ const CourseLists = ({
           className="p-2 rounded-full cursor-pointer hover:bg-blue-100"
         />
       </div>
+
+      {/* DELETION CONFIRMATION MODAL */}
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[300px] text-center">
+            <h3 className="text-lg font-semibold mb-4">
+              Are you sure you want to delete?
+            </h3>
+
+            <div className="flex justify-between gap-4">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="w-full py-2 bg-gray-200 rounded-md hover:bg-gray-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDelete}
+                className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

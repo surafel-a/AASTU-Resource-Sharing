@@ -4,9 +4,12 @@ import { faBook, faHashtag, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useCourse } from "../contexts/CourseContext";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const AddCourse = () => {
   const { createCourse, courses } = useCourse();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     code: "",
@@ -49,6 +52,7 @@ const AddCourse = () => {
         year: "",
         semester: "",
       });
+      navigate("/courses");
     } catch (err) {
       console.error(err);
     }

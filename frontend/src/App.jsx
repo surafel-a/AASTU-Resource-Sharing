@@ -23,6 +23,7 @@ import ReportManagement from "./admin/ReportManagement";
 
 import CourseLayout from "./layouts/CourseLayout";
 import AddCourse from "./pages/AddCourse";
+import EditCourse from "./pages/EditCourse";
 
 const App = () => {
   return (
@@ -39,7 +40,7 @@ const App = () => {
           <Route path="/courses" element={<CourseLayout />}>
             <Route index element={<Courses />} />
             <Route path="add" element={<AddCourse />} />
-            <Route path=":courseId" element={<AddCourse />} />
+            <Route path=":courseId/edit" element={<EditCourse />} />
           </Route>
           <Route path="/uploads" element={<MyUploads />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
