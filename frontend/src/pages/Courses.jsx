@@ -55,12 +55,13 @@ const Courses = () => {
       const semesterMatch =
         !filters.semester || course.semester === Number(filters.semester);
 
+      const search = filters.search.toLowerCase();
+
       const searchMatch =
-        !filters.search ||
-        course.courseInstructor
-          .toLowerCase()
-          .includes(filters.search.toLowerCase()) ||
-        course.department.toLowerCase().includes(filters.search.toLowerCase());
+        !search ||
+        course.courseInstructor.toLowerCase().includes(search) ||
+        course.department.toLowerCase().includes(search) ||
+        course.name.toLowerCase().includes(search);
 
       return departmentMatch && yearMatch && semesterMatch && searchMatch;
     });

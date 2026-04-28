@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -53,14 +56,22 @@ export default function Login() {
             className="p-4 text-lg placeholder-gray-400 ring ring-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            className="p-4 text-lg placeholder-gray-400 ring ring-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-4 text-lg placeholder-gray-400 ring ring-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <FontAwesomeIcon
+              icon={showPassword ? faEye : faEyeSlash}
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute text-gray-500 cursor-pointer right-4 top-1/2 -translate-y-1/2 hover:text-gray-700 transition"
+            />
+          </div>
 
           <button
             type="submit"

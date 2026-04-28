@@ -1,18 +1,27 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronUp,
+  faSearch,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 import Logo from "./Logo";
 import { useUser } from "../contexts/UserContext";
 import { formatDepartment } from "../utilities/names";
+import { toast } from "react-toastify";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const { user } = useUser();
+  const { logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [open, setOpen] = useState(false);
 
   // Define nav items
   const navItems = [
@@ -27,6 +36,15 @@ const Navbar = () => {
     if (item.path === "/") return pathname === "/";
     return pathname === item.path || pathname.startsWith(item.path + "/");
   })?.name;
+
+  const handleLogout = () => {
+    setOpen(false);
+
+    logout();
+
+    navigate("/login");
+    toast.success("Logged out successfully!");
+  };
 
   return (
     <nav className="flex items-center justify-between mt-2 ">
@@ -73,7 +91,7 @@ const Navbar = () => {
             <p>{formatDepartment(user?.department)} Student</p>
           </div>
           <button
-            className="w-12 h-12 bg-gray-300 rounded-full cursor-pointer"
+            className="w-12 h-12 bg-gray-300 rounded-full cursor-pointer overflow-hidden"
             onClick={() => navigate("/profile")}
           >
             <img
@@ -82,6 +100,29 @@ const Navbar = () => {
               className="w-full h-full object-cover rounded-xl"
             />
           </button>
+
+          {/* Chevron Icon */}
+          <button onClick={() => setOpen(!open)}>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={`transition-transform duration-300 ${
+                open ? "rotate-180" : "rotate-0"
+              }`}
+            />
+          </button>
+
+          {/* Dropdown */}
+          {open && (
+            <div className="absolute right-0 top-16 w-40 bg-white shadow-lg rounded-md py-2 z-50">
+              <button
+                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+                onClick={handleLogout}
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
