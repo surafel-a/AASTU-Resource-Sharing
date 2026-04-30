@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DataRow from "../components/DataRow";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 // CONTEXTS
 import { useResource } from "../contexts/ResourceContext";
@@ -26,6 +27,7 @@ import { useState } from "react";
 const MyUploads = () => {
   const { myResources, loading } = useResource();
   const [activeFilter, setActiveFilter] = useState("all");
+  const navigate = useNavigate();
 
   const approvedCount = myResources.filter(
     (res) => res.status === "approved",
@@ -75,12 +77,15 @@ const MyUploads = () => {
           <p className="text-2xl font-semibold text-black/50">
             Manage and track your contributed academic resources.
           </p>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1152D4] text-white text-2xl font-semibold cursor-pointer">
+          <button
+            onClick={() => navigate("/uploads/add")}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1152D4] text-white text-2xl font-semibold cursor-pointer"
+          >
             <div>
               <FontAwesomeIcon icon={faCirclePlus} className="" />
             </div>
             <p className="">Upload New Resource</p>
-          </div>
+          </button>
         </div>
 
         {/* UPLOADS, APPROVED, PENDING */}
