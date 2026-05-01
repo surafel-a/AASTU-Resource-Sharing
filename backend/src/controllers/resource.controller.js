@@ -8,7 +8,7 @@ import { streamUpload } from "../middlewares/multer.middleware.js";
 export const createResource = async (req, res, next) => {
   try {
     if (!req.file) {
-      return new AppError("Please upload a file", 400);
+      return next(new AppError("Please upload a file", 400));
     }
 
     const result = await streamUpload(req.file.buffer, "AASTU_Resources");

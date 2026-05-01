@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GoBackButton from "../components/GoBackButton";
 import {
+  faCircleCheck,
+  faCircleInfo,
+  faClock,
   faCloudArrowUp,
   faFileLines,
+  faTag,
+  faUser,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -206,6 +211,97 @@ const UploadResource = () => {
                 <option value="department">Department Only</option>
                 <option value="course">Course Only</option>
               </select>
+            </div>
+          </div>
+
+          <div className="p-10 bg-[#F6F6F8] rounded-lg shadow-xl mt-20">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className="text-xl text-black/70"
+              />
+              <p className="text-xl font-bold uppercase text-black/70">
+                System Information
+              </p>
+            </div>
+
+            <div className="inline-flex border-2 border-black/30 px-4 py-2 bg-white rounded-xl shadow-xl mt-5 mr-5">
+              <div className="flex items-center gap-3 text-black/70">
+                <FontAwesomeIcon icon={faUser} className="text-lg" />
+                <p className="text-lg">
+                  Uploaded by:{" "}
+                  <span className="font-semibold text-black ml-2">
+                    Alex Rivera
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="inline-flex border-2 border-black/30 px-4 py-2 bg-white rounded-xl shadow-xl mt-5">
+              <div className="flex items-center gap-3 text-black/70">
+                <FontAwesomeIcon icon={faClock} className="text-lg" />
+                <p className="text-lg">
+                  Initial Status:{" "}
+                  <span className="font-bold text-orange-600 ml-2 px-4 py-1 bg-orange-100 rounded-full text-sm">
+                    Pending
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full h-0.5 rounded-full bg-black/30 mt-20 mb-5"></div>
+
+          <div className="flex items-center justify-end gap-5">
+            <button className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4]  cursor-pointer bg-white text-[#1152D4] transition-colors duration-150">
+              Cancel
+            </button>
+            <button className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] bg-[#1152D4] text-white cursor-pointer  transition-colors duration-150">
+              Upload Resource
+            </button>
+          </div>
+        </section>
+
+        {/* GRID FOR INFO */}
+        <section className="grid grid-cols-3 gap-10 my-15">
+          <div className="grid grid-cols-[auto_1fr] gap-5">
+            <FontAwesomeIcon
+              icon={faTag}
+              className="p-3 bg-blue-100 text-blue-600 text-2xl rounded-full"
+            />
+            <div className="flex flex-col">
+              <h3 className="font-semibold text-xl">Clear Titles</h3>
+              <p className="text-lg text-black/50 font-semibold">
+                Ensure titles include the specific topic and year for better
+                searchability.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[auto_1fr] gap-5">
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              className="p-3 bg-blue-100 text-blue-600 text-2xl rounded-full"
+            />
+            <div className="flex flex-col">
+              <h3 className="font-semibold text-xl">Verify Accuracy</h3>
+              <p className="text-lg text-black/50 font-semibold">
+                Review your notes for clarity before sharing with the community.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[auto_1fr] gap-5">
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className="p-3 bg-blue-100 text-blue-600 text-2xl rounded-full"
+            />
+            <div className="flex flex-col">
+              <h3 className="font-semibold text-xl">Quality First</h3>
+              <p className="text-lg text-black/50 font-semibold">
+                Highly rated resources gain more visibility and academic
+                rewards.
+              </p>
             </div>
           </div>
         </section>
