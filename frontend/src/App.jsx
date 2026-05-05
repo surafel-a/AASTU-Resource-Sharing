@@ -23,9 +23,8 @@ import ReportManagement from "./admin/ReportManagement";
 
 import CourseLayout from "./layouts/CourseLayout";
 import AddCourse from "./pages/AddCourse";
-import EditCourse from "./pages/EditCourse";
+import UpdateResource from "./pages/UpdateResource";
 import ResourceLayout from "./layouts/ResourceLayout";
-import EditResource from "./pages/EditResource";
 
 const App = () => {
   return (
@@ -42,16 +41,15 @@ const App = () => {
           <Route path="/courses" element={<CourseLayout />}>
             <Route index element={<Courses />} />
             <Route path="add" element={<AddCourse />} />
-            <Route path=":courseId/edit" element={<EditCourse />} />
+            <Route path=":courseId/edit" element={<UpdateResource />} />
           </Route>
           <Route path="/uploads" element={<ResourceLayout />}>
             <Route index element={<MyUploads />} />
             <Route path="add" element={<UploadResource />} />
-            <Route path=":resourceId/edit" element={<EditResource />} />
+            <Route path=":resourceId/edit" element={<UpdateResource />} />
           </Route>
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/upload-resource" element={<UploadResource />} />
         </Route>
 
         {/* Admin Routes */}

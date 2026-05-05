@@ -37,6 +37,49 @@ export function ResourceProvider({ children }) {
     }
   };
 
+  // UPDATE RESOURCE
+  const updateResource = async (resourceId, formData) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.patch(
+        `${BASE_URL}/api/v1/resources/${resourceId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        },
+      );
+
+      setResources((prev) =>
+        prev.map((res) => (res._id === resourceId ? data.data.resource : res)),
+      );
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // DELETE RESOURCE
+  const deleteResource = async (resourceId) => {
+    try {
+      setLoading(true);
+      await axios.delete(`${BASE_URL}/api/v1/resources/${resourceId}`, {
+        withCredentials: true,
+      });
+
+      setResources((prev) => prev.filter((res) => res._id !== resourceId));
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // GET ALL RESOURCES
   const getAllResources = async () => {
     try {
@@ -69,7 +112,15 @@ export function ResourceProvider({ children }) {
     }
   }, [resources, authUser]);
 
-  const value = { resources, myResources, loading, getAllResources, createResource };
+  const value = {
+    resources,
+    myResources,
+    loading,
+    getAllResources,
+    createResource,
+    updateResource,
+    deleteResource,
+  };
 
   return (
     <ResourceContext.Provider value={value}>

@@ -15,14 +15,20 @@ import {
   faFileVideo,
   faFileWord,
 } from "@fortawesome/free-solid-svg-icons";
+
+// ROUTER
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+// COMPONENTS
 import DataRow from "../components/DataRow";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
 
 // CONTEXTS
 import { useResource } from "../contexts/ResourceContext";
+
+// UTILITIES
 import { formatDate } from "../utilities/formatDate";
-import { useState } from "react";
 import { formatFileSize } from "../utilities/formatFileSize";
 
 const MyUploads = () => {
@@ -200,6 +206,7 @@ const MyUploads = () => {
             {filteredResources.map((myResource) => (
               <DataRow
                 key={myResource._id}
+                resourceId={myResource._id}
                 fileIcon={getFileIcon(myResource.type)}
                 fileName={myResource.title}
                 fileSize={formatFileSize(myResource.fileSize)}

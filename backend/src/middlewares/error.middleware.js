@@ -1,5 +1,7 @@
 import AppError from "../utils/appError.js";
 
+const MAX_SIZE_MB = 5;
+
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
@@ -22,6 +24,9 @@ const handleJWTError = () =>
 
 const handleJWTExpiredError = () =>
   new AppError("Your token has expired! Please log in again.", 401);
+
+const handleMulterFileSizeError = () =>
+  new AppError(`File size must be less than ${MAX_SIZE_MB}MB.`, 400);
 
 const sendErrorDev = (err, req, res) => {
   if (req.originalUrl.startsWith("/api")) {
@@ -90,6 +95,7 @@ export const globalErrorHandler = (err, req, res, next) => {
   if (error.name === "ValidationError") error = handleValidationErrorDB(error);
   if (error.name === "JsonWebTokenError") error = handleJWTError();
   if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
+  if (error.code === "LIMIT_FILE_SIZE") error = handleMulterFileSizeError();
 
   return sendErrorProd(error, req, res);
 };

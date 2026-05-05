@@ -13,13 +13,15 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useCourse } from "../contexts/CourseContext";
 import { useResource } from "../contexts/ResourceContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
-const UploadResource = () => {
+const UpdateResource = () => {
+  const { resourceId } = useParams();
   const { user } = useAuth();
   const { courses } = useCourse();
-  const { createResource } = useResource();
+  const { updateResource, resources } = useResource();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -29,6 +31,22 @@ const UploadResource = () => {
     department: "",
     visibility: "",
   });
+
+  useEffect(() => {
+    const resource = resources.find((r) => r._id === resourceId);
+
+    if (resource) {
+      setFormData({
+        title: resource.title || "",
+        description: resource.description || "",
+        course: resource.course?._id || "",
+        category: resource.category || "",
+        type: resource.type || "",
+        department: resource.department || "",
+        visibility: resource.visibility || "",
+      });
+    }
+  }, [resourceId, resources]);
 
   const [file, setFile] = useState(null);
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
@@ -42,11 +60,6 @@ const UploadResource = () => {
 
   const handleSubmit = async () => {
     try {
-      if (!file) {
-        console.log("No file selected");
-        return;
-      }
-
       const data = new FormData();
 
       data.append("title", formData.title);
@@ -56,11 +69,14 @@ const UploadResource = () => {
       data.append("department", formData.department);
       data.append("category", formData.category);
       data.append("visibility", formData.visibility);
-      data.append("file", file);
 
-      await createResource(data);
+      if (file) {
+        data.append("file", file);
+      }
 
-      toast.success("Resource uploaded successfully!");
+      await updateResource(resourceId, data);
+
+      toast.success("Resource updated successfully!");
       setFile(null);
       setFormData({
         title: "",
@@ -80,9 +96,7 @@ const UploadResource = () => {
       <div className="mx-50">
         <GoBackButton />
 
-        <h1 className="mb-5 text-5xl font-bold text-center">
-          Upload New Resource
-        </h1>
+        <h1 className="mb-5 text-5xl font-bold text-center">Update Resource</h1>
         <div className="flex items-center justify-between mb-5 ">
           <p className="mx-auto text-2xl font-semibold text-black/50">
             Share academic materials with your fellow students and departments.
@@ -369,7 +383,7 @@ const UploadResource = () => {
               onClick={handleSubmit}
               className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] bg-[#1152D4] text-white cursor-pointer  transition-colors duration-150"
             >
-              Upload Resource
+              Update Resource
             </button>
           </div>
         </section>
@@ -422,4 +436,4 @@ const UploadResource = () => {
   );
 };
 
-export default UploadResource;
+export default UpdateResource;

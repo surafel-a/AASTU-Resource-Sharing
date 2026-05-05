@@ -86,17 +86,22 @@ export const updateResourceById = async (req, res, next) => {
       return next(new AppError("No resource found with that ID", 404));
     }
 
+    let updateData = { ...req.body };
+
     if (req.file) {
+      // delete old file
       if (resource.fileId) {
         await cloudinary.uploader.destroy(resource.fileId);
       }
 
+      // upload new file
       const result = await streamUpload(req.file.buffer, "AASTU_Resources");
-      req.fileUrl = result.secure_url;
-      req.fileId = result.public_id;
+
+      updateData.fileUrl = result.secure_url;
+      updateData.fileId = result.public_id;
     }
 
-    resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {
+    resource = await Resource.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });
