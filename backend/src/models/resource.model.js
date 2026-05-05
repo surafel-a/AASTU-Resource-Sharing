@@ -30,6 +30,11 @@ const resourceSchema = new mongoose.Schema(
       required: [true, "Please provide a description for the resource"],
       trim: true,
     },
+    category: {
+      type: String,
+      required: [true, "Please provide a category for the resource"],
+      trim: true,
+    },
     fileUrl: {
       type: String,
       required: [true, "Please provide a file"],
@@ -37,6 +42,9 @@ const resourceSchema = new mongoose.Schema(
     fileId: {
       type: String,
       default: "",
+    },
+    fileSize: {
+      type: Number,
     },
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,

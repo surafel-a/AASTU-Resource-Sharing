@@ -13,6 +13,30 @@ export function ResourceProvider({ children }) {
 
   const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
+  // CREATE RESOURCE
+  const createResource = async (formData) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        `${BASE_URL}/api/v1/resources`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        },
+      );
+
+      setResources((prev) => [data.data.resource, ...prev]);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // GET ALL RESOURCES
   const getAllResources = async () => {
     try {
@@ -45,7 +69,7 @@ export function ResourceProvider({ children }) {
     }
   }, [resources, authUser]);
 
-  const value = { resources, loading, getAllResources, myResources };
+  const value = { resources, myResources, loading, getAllResources, createResource };
 
   return (
     <ResourceContext.Provider value={value}>

@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { useResource } from "../contexts/ResourceContext";
 import { formatDate } from "../utilities/formatDate";
 import { useState } from "react";
+import { formatFileSize } from "../utilities/formatFileSize";
 
 const MyUploads = () => {
   const { myResources, loading } = useResource();
@@ -201,7 +202,7 @@ const MyUploads = () => {
                 key={myResource._id}
                 fileIcon={getFileIcon(myResource.type)}
                 fileName={myResource.title}
-                fileSize="12 MB"
+                fileSize={formatFileSize(myResource.fileSize)}
                 fileType={myResource.type}
                 category={myResource.category}
                 dateUploaded={formatDate(myResource.createdAt)}

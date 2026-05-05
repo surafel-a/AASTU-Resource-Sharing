@@ -19,16 +19,18 @@ export const createResource = async (req, res, next) => {
       department: req.body.department,
       title: req.body.title,
       description: req.body.description,
+      category: req.body.category,
       uploadedBy: req.user._id,
       fileUrl: result.secure_url,
       fileId: result.public_id,
       format: result.format,
+      fileSize: req.file.size,
     });
 
     res.status(201).json({
       status: "success",
       data: {
-        course: newResource,
+        resource: newResource,
       },
     });
   } catch (error) {

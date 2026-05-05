@@ -10,8 +10,70 @@ import {
   faUser,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../contexts/AuthContext";
+import { useCourse } from "../contexts/CourseContext";
+import { useResource } from "../contexts/ResourceContext";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const UploadResource = () => {
+  const { user } = useAuth();
+  const { courses } = useCourse();
+  const { createResource } = useResource();
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    course: "",
+    category: "",
+    type: "",
+    department: "",
+    visibility: "",
+  });
+
+  const [file, setFile] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (!file) {
+        console.log("No file selected");
+        return;
+      }
+
+      const data = new FormData();
+
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("type", formData.type);
+      data.append("course", formData.course);
+      data.append("department", formData.department);
+      data.append("category", formData.category);
+      data.append("visibility", formData.visibility);
+      data.append("file", file);
+
+      await createResource(data);
+
+      toast.success("Resource uploaded successfully!");
+      setFile(null);
+      setFormData({
+        title: "",
+        description: "",
+        course: "",
+        type: "",
+        department: "",
+        visibility: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="bg-[#F6F6F8] min-h-screen py-10">
       <div className="mx-50">
@@ -59,32 +121,47 @@ const UploadResource = () => {
               </p>
             </div>
 
-            <button className="inline-flex self-center p-3 text-xl font-semibold border-2 rounded-lg border-black/50 cursor-pointer hover:bg-[#1152D4] hover:text-white transition-colors duration-150">
+            <input
+              type="file"
+              accept=".pdf,.pptx,.docx,.mp4"
+              className="hidden"
+              id="fileUpload"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+
+            <label
+              htmlFor="fileUpload"
+              className="inline-flex self-center p-3 text-xl font-semibold border-2 rounded-lg border-black/50 cursor-pointer hover:bg-[#1152D4] hover:text-white transition-colors duration-150"
+            >
               Browse File
-            </button>
+            </label>
           </div>
 
           {/* UPLOADED FILE DISPLAY */}
-          <div className="flex items-center justify-between gap-5 p-4 mt-5 border-2 border-gray-300 rounded-2xl bg-blue-50">
-            <div className="flex items-center gap-4">
-              <FontAwesomeIcon
-                icon={faFileLines}
-                className="p-3 text-3xl text-blue-600 bg-blue-100 rounded-lg"
-              />
-              <div>
-                <h2 className="text-xl font-semibold">
-                  CS201_Lecture_Notes_Week4.pdf
-                </h2>
-                <p className="text-lg font-medium text-black/50">
-                  4.2 MB <span>.Uploaded</span>
-                </p>
+
+          {file && (
+            <div className="flex items-center justify-between gap-5 p-4 mt-5 border-2 border-gray-300 rounded-2xl bg-blue-50">
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon
+                  icon={faFileLines}
+                  className="p-3 text-3xl text-blue-600 bg-blue-100 rounded-lg"
+                />
+                <div>
+                  <h2 className="text-xl font-semibold">{file.name}</h2>
+                  <p className="text-lg font-medium text-black/50">
+                    {(file.size / (1024 * 1024)).toFixed(2)} MB{" "}
+                    <span>.Uploaded</span>
+                  </p>
+                </div>
               </div>
+
+              <FontAwesomeIcon
+                icon={faXmark}
+                onClick={() => setFile(null)}
+                className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+              />
             </div>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
-            />
-          </div>
+          )}
 
           {/* RESOURCE DETAILS */}
           <h2 className="mt-20 text-xl font-bold uppercase text-black/50">
@@ -92,9 +169,9 @@ const UploadResource = () => {
           </h2>
           <p className="mt-5 mb-2 text-xl font-semibold">Resource Title</p>
           <input
-            name="code"
-            // value={formData.code}
-            // onChange={handleChange}
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
             type="text"
             placeholder="e.g Intro to Algorithms - Final Exam Prep"
             className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40 placeholder:text-lg"
@@ -104,15 +181,25 @@ const UploadResource = () => {
             Resource Description
           </p>
           <textarea
-            // name="code"
-            // value={formData.code}
-            // onChange={handleChange}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
             placeholder="Provide a brief summary of what this resource covers..."
             rows={5}
             className="w-full px-6 py-3 rounded-lg text-black/70 bg-[#F6F6F8] 
              focus:outline-none focus:ring-2 focus:ring-[#1152D4] 
              placeholder:font-semibold placeholder:text-black/40 
              placeholder:text-lg resize-none"
+          />
+
+          <p className="mt-5 mb-2 text-xl font-semibold">Resource Category</p>
+          <input
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            type="text"
+            placeholder="e.g Lecture Notes, Past Exams, Assignments, etc."
+            className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40 placeholder:text-lg"
           />
 
           {/* CLASSIFICATION */}
@@ -124,9 +211,9 @@ const UploadResource = () => {
             <div>
               <p className="mt-5 mb-2 text-xl font-semibold">Resource Type</p>
               <select
-                // name="type"
-                // value={formData.type}
-                // onChange={handleChange}
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
                 className="w-full px-6 py-3 rounded-lg bg-[#F6F6F8] text-black/70 
              focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
               >
@@ -143,22 +230,31 @@ const UploadResource = () => {
 
             <div>
               <p className="mt-5 mb-2 text-xl font-semibold">Related Course</p>
-              <input
-                name="code"
-                // value={formData.code}
-                // onChange={handleChange}
-                type="text"
-                placeholder="e.g Intro to Algorithms - Final Exam Prep"
-                className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40 placeholder:text-lg"
-              />
+
+              <select
+                name="course"
+                value={formData.course}
+                onChange={handleChange}
+                className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
+              >
+                <option value="" disabled hidden>
+                  Select Course
+                </option>
+
+                {courses.map((course) => (
+                  <option key={course._id} value={course._id}>
+                    {course.code} - {course.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
               <p className="mt-5 mb-2 text-xl font-semibold">Department</p>
               <select
-                // name="department"
-                // value={formData.department}
-                // onChange={handleChange}
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
                 className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
                 defaultValue=""
               >
@@ -197,9 +293,9 @@ const UploadResource = () => {
                 Visibility Control
               </p>
               <select
-                // name="department"
-                // value={formData.department}
-                // onChange={handleChange}
+                name="visibility"
+                value={formData.visibility}
+                onChange={handleChange}
                 className="w-full px-6 py-3 rounded-lg text-black/40 bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
                 defaultValue=""
               >
@@ -231,7 +327,7 @@ const UploadResource = () => {
                 <p className="text-lg">
                   Uploaded by:{" "}
                   <span className="font-semibold text-black ml-2">
-                    Alex Rivera
+                    {user?.name || "John Doe"}
                   </span>
                 </p>
               </div>
@@ -256,7 +352,10 @@ const UploadResource = () => {
             <button className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4]  cursor-pointer bg-white text-[#1152D4] transition-colors duration-150">
               Cancel
             </button>
-            <button className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] bg-[#1152D4] text-white cursor-pointer  transition-colors duration-150">
+            <button
+              onClick={handleSubmit}
+              className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] bg-[#1152D4] text-white cursor-pointer  transition-colors duration-150"
+            >
               Upload Resource
             </button>
           </div>
