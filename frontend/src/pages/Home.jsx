@@ -93,6 +93,7 @@ const Home = () => {
             {resources.slice(0, 4).map((resource) => (
               <RecentUploads
                 key={resource._id}
+                code={resource.course.code}
                 icon={getFileIcon(resource.type)}
                 course={resource.title}
                 department={resource.department}

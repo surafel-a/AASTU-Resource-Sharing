@@ -8,6 +8,7 @@ import {
 
 const RecentUploads = ({
   icon,
+  code,
   course,
   department,
   views,
@@ -22,7 +23,7 @@ const RecentUploads = ({
       <div className="pr-5">
         <h3 className="font-bold text-xl">{course}</h3>
         <p className="mb-5">
-          <span>Math 2101</span>
+          <span>{code}</span>
           <span>. {department}</span>
         </p>
         <div className="flex justify-between items-center">

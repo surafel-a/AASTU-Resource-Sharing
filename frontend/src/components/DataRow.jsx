@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useResource } from "../contexts/ResourceContext";
+import { toast } from "react-toastify";
 
 const DataRow = ({
   resourceId,
@@ -31,8 +32,9 @@ const DataRow = ({
     rejected: "text-red-600 bg-red-100",
   };
 
-  const handleDelete = () => {
-    deleteResource(resourceId);
+  const handleDelete = async () => {
+    await deleteResource(resourceId);
+    toast.success("Resource deleted successfully");
 
     setShowConfirm(false);
   };

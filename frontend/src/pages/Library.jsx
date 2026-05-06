@@ -10,6 +10,8 @@ import {
   faChevronLeft,
   faChevronRight,
   faFilePdf,
+  faFilePowerpoint,
+  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
 import ResourceLibraries from "../components/ResourceLibraries";

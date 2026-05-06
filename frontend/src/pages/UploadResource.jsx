@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 const UploadResource = () => {
   const { user } = useAuth();
   const { courses } = useCourse();
-  const { createResource } = useResource();
+  const { createResource, loading } = useResource();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -367,7 +367,13 @@ const UploadResource = () => {
             </button>
             <button
               onClick={handleSubmit}
-              className="px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] bg-[#1152D4] text-white cursor-pointer  transition-colors duration-150"
+              disabled={loading}
+              className={`px-6 py-3 text-xl font-semibold border-2 rounded-lg border-[#1152D4] text-white transition-colors duration-150
+              ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed opacity-70"
+                  : "bg-[#1152D4] hover:bg-[#0d43b0] cursor-pointer"
+              }`}
             >
               Upload Resource
             </button>
