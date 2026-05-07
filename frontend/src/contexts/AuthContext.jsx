@@ -15,18 +15,22 @@ export function AuthProvider({ children }) {
   // SIGNUP
   const signup = async (formData) => {
     try {
+      setLoading(true);
       const { data } = await axios.post(`${BASE_URL}/signup`, formData);
       setUser(data.data.user);
       return data;
     } catch (error) {
       console.error(error.response?.data || error.message);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   // LOGIN
   const login = async (email, password) => {
     try {
+      setLoading(true);
       const { data } = await axios.post(`${BASE_URL}/login`, {
         email,
         password,
@@ -37,16 +41,21 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error(error.response?.data || error.message);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   // LOGOUT
   const logout = async () => {
     try {
+      setLoading(true);
       await axios.post(`${BASE_URL}/logout`);
       setUser(null);
     } catch (error) {
       console.error(error.response?.data || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,6 +63,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setLoading(true);
         const { data } = await axios.get(`${BASE_URL}/api/v1/users/me`);
         setUser(data.data.user);
       } catch (error) {
@@ -75,11 +85,7 @@ export function AuthProvider({ children }) {
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // CUSTOM HOOK

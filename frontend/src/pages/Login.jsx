@@ -9,7 +9,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -75,7 +75,14 @@ export default function Login() {
 
           <button
             type="submit"
-            className="py-4 text-xl font-semibold text-white transition duration-300 bg-blue-600 cursor-pointer rounded-xl hover:bg-blue-700"
+            disabled={loading}
+            className={`py-4 text-xl font-semibold text-white rounded-xl transition duration-300
+              ${
+                loading
+                  ? "bg-blue-400 cursor-not-allowed opacity-70"
+                  : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              }
+            `}
           >
             Login
           </button>

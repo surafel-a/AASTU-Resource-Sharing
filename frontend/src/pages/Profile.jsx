@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faIdCard,
   faGraduationCap,
@@ -7,17 +8,25 @@ import {
   faBell,
   faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { faUser } from "@fortawesome/free-regular-svg-icons";
+
 import { useEffect, useState } from "react";
+
 import { useUser } from "../contexts/UserContext";
+
 import { toast } from "react-toastify";
+
 import { formatDate } from "../utilities/formatDate";
+
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const Profile = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [preview, setPreview] = useState(null);
+
   const { user, updateUser, loading } = useUser();
+
   const [form, setForm] = useState({
     name: "",
     universityId: "",
@@ -26,7 +35,7 @@ const Profile = () => {
     phoneNumber: "",
   });
 
-  // Populate form when user is loaded
+  // POPULATE FORM
   useEffect(() => {
     if (user) {
       setForm({
@@ -39,29 +48,36 @@ const Profile = () => {
     }
   }, [user]);
 
+  // NOTIFICATIONS
   const [courseAnnouncement, setCourseAnnouncement] = useState(true);
+
   const [assignmentReminder, setAssignmentReminder] = useState(true);
+
   const [securityUpdate, setSecurityUpdate] = useState(true);
 
+  // LOADING
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // INPUT CHANGE
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // SAVE
   const handleSave = async () => {
     try {
       const formData = new FormData();
 
-      // text fields
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("department", form.department);
       formData.append("phoneNumber", form.phoneNumber);
 
-      // (must match backend multer)
       if (profileImage) {
         formData.append("photo", profileImage);
       }
@@ -74,7 +90,8 @@ const Profile = () => {
     }
   };
 
-  const handleCancel = async () => {
+  // CANCEL
+  const handleCancel = () => {
     if (user) {
       setForm({
         name: user.name || "",
@@ -87,34 +104,73 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-[#F6F6F8] min-h-screen py-10">
-      <div className="mx-50">
-        <h1 className="mb-5 text-5xl font-bold">My Profile</h1>
-        <p className="text-2xl font-semibold text-black/50">
-          Manage your personal information and account preferances.
-        </p>
+    <div className="bg-[#F6F6F8] min-h-screen py-6 md:py-10">
+      <div className="mx-4 sm:mx-6 lg:mx-12 xl:mx-20 2xl:mx-32">
+        {/* PAGE TITLE */}
+        <div className="mb-8">
+          <h1 className="mb-3 text-3xl sm:text-4xl lg:text-5xl font-bold">
+            My Profile
+          </h1>
 
-        <section className="relative mt-10 overflow-hidden rounded-xl">
-          <div className="bg-[#E7EEFB] h-40 "></div>
-          <div className="flex flex-col p-6 bg-white h-50">
-            <div className="mt-auto space-y-2">
-              <h2 className="text-2xl font-bold">{user?.name}</h2>
+          <p className="text-base sm:text-lg lg:text-2xl font-semibold text-black/50">
+            Manage your personal information and account preferences.
+          </p>
+        </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-5 text-lg font-semibold text-black/50">
-                  <div className="flex items-center gap-1">
+        {/* PROFILE HEADER */}
+        <section className="relative overflow-hidden rounded-2xl shadow-lg bg-white mb-10">
+          {/* TOP BACKGROUND */}
+          <div className="bg-[#E7EEFB] h-32 sm:h-40"></div>
+
+          {/* CONTENT */}
+          <div className="px-5 sm:px-8 pb-8 pt-20 sm:pt-24">
+            {/* PROFILE IMAGE */}
+            <div className="absolute top-16 sm:top-20 left-5 sm:left-8">
+              <div className="relative">
+                <div className="bg-white shadow-2xl h-28 w-28 sm:h-36 sm:w-36 p-1.5 rounded-2xl">
+                  <img
+                    src={preview || user?.photo || "/default-avatar.png"}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-2xl"
+                  />
+                </div>
+
+                {/* CAMERA */}
+                <button
+                  className="absolute bottom-1 right-1 bg-[#1152D4] text-white p-2 rounded-lg shadow-lg cursor-pointer hover:bg-blue-700 transition"
+                  onClick={() =>
+                    document.getElementById("profileUpload").click()
+                  }
+                >
+                  <FontAwesomeIcon icon={faCamera} />
+                </button>
+              </div>
+            </div>
+
+            {/* USER INFO */}
+            <div className="mt-2 sm:ml-40">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+                {user?.name}
+              </h2>
+
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                {/* LEFT INFO */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm sm:text-base lg:text-lg font-semibold text-black/50">
+                  <div className="flex items-center gap-2">
                     <FontAwesomeIcon icon={faIdCard} />
                     <p>{user?.universityId}</p>
                   </div>
 
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <FontAwesomeIcon icon={faGraduationCap} />
                     <p>{user?.department}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 px-4 py-1 text-green-600 bg-green-100 rounded-full">
+                {/* JOIN DATE */}
+                <div className="flex items-center gap-2 px-4 py-2 text-sm sm:text-base text-green-700 bg-green-100 rounded-full w-fit">
                   <FontAwesomeIcon icon={faCheckCircle} />
+
                   <p>
                     Joined{" "}
                     {user?.createdAt ? formatDate(user.createdAt) : "Recently"}
@@ -123,24 +179,9 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          {/* PROFILE */}
-          <div className="absolute top-18 left-10 bg-white shadow-2xl h-40 w-40 p-1.5 rounded-xl">
-            <img
-              src={preview || user?.photo || "/default-avatar.png"}
-              alt="Profile"
-              className="w-full h-full object-cover rounded-xl"
-            />
-          </div>
-          <div className="absolute top-49.5 left-40">
-            <FontAwesomeIcon
-              icon={faCamera}
-              className="text-white p-1.5 rounded-md bg-[#1152D4] cursor-pointer"
-              onClick={() => document.getElementById("profileUpload").click()}
-            />
-          </div>
         </section>
 
+        {/* FILE INPUT */}
         <input
           type="file"
           accept="image/*"
@@ -151,7 +192,6 @@ const Profile = () => {
 
             if (!file) return;
 
-            // optional validation
             if (!file.type.startsWith("image/")) {
               toast.error("Only image files allowed");
               return;
@@ -167,86 +207,83 @@ const Profile = () => {
           }}
         />
 
-        <div className="flex items-center gap-5">
+        {/* MAIN CONTENT */}
+        <div className="flex flex-col xl:flex-row gap-8">
           {/* PERSONAL DETAILS */}
-          <section className="px-10 py-12 shadow-xl rounded-xl mt-10 bg-white row-span-2 w-[70%]">
-            <div className="flex items-center gap-2 mb-5 text-xl font-bold">
+          <section className="bg-white shadow-lg rounded-2xl p-6 sm:p-8 lg:p-10 w-full xl:w-[70%]">
+            {/* TITLE */}
+            <div className="flex items-center gap-3 mb-8 text-xl font-bold">
               <FontAwesomeIcon icon={faUser} className="text-[#1152D4]" />
+
               <p>Personal Details</p>
             </div>
 
-            <div>
-              <div className="grid grid-cols-2 gap-5">
-                {[
-                  {
-                    label: "Full Name",
-                    name: "name",
-                    placeholder: `${user?.name}`,
-                  },
-                  {
-                    label: "Student ID",
-                    name: "universityId",
-                    placeholder: `${user?.universityId}`,
-                  },
-                  {
-                    label: "University Email",
-                    name: "email",
-                    placeholder: `${user?.email}`,
-                  },
-                  {
-                    label: "Department",
-                    name: "department",
-                    placeholder: `${user?.department}`,
-                  },
-                  {
-                    label: "Phone Number",
-                    name: "phoneNumber",
-                    placeholder: `${user?.phoneNumber}`,
-                  },
-                ].map((field) => (
-                  <div key={field.name} className="flex flex-col gap-2">
-                    <p className="text-xl font-bold text-black/50">
-                      {field.label}
-                    </p>
-                    <input
-                      name={field.name}
-                      // value={form[field.name]}
-                      value={form[field.name]}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      className="w-[90%] pl-4 pr-6 py-2 rounded-md bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40 ring-2 ring-black/20"
-                    />
-                  </div>
-                ))}
-              </div>
+            {/* FORM */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  label: "Full Name",
+                  name: "name",
+                },
+                {
+                  label: "Student ID",
+                  name: "universityId",
+                },
+                {
+                  label: "University Email",
+                  name: "email",
+                },
+                {
+                  label: "Department",
+                  name: "department",
+                },
+                {
+                  label: "Phone Number",
+                  name: "phoneNumber",
+                },
+              ].map((field) => (
+                <div key={field.name} className="flex flex-col gap-2">
+                  <p className="font-bold text-black/50">{field.label}</p>
 
-              <div className="mt-10 mb-10 border-b-2 text-black/20"></div>
-              <div className="flex items-center justify-end gap-2 text-lg font-semibold">
-                <button
-                  className="px-4 py-2 border-2 border-[#1152D4] rounded-md cursor-pointer"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="px-6 py-2 bg-[#1152D4] text-white rounded-md cursor-pointer"
-                  onClick={handleSave}
-                >
-                  Save Changes
-                </button>
-              </div>
+                  <input
+                    name={field.name}
+                    value={form[field.name]}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] ring-1 ring-black/10"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* BUTTONS */}
+            <div className="mt-10 pt-6 border-t border-black/10 flex flex-col sm:flex-row justify-end gap-3">
+              <button
+                className="px-5 py-3 border-2 border-[#1152D4] rounded-xl cursor-pointer hover:bg-blue-50 transition font-semibold"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-6 py-3 bg-[#1152D4] text-white rounded-xl cursor-pointer hover:bg-blue-700 transition font-semibold"
+                onClick={handleSave}
+              >
+                Save Changes
+              </button>
             </div>
           </section>
 
-          {/* NOTIFICATIONS */}
-          <section className="flex flex-col gap-4 w-[30%] self-start">
-            <div className="p-10 mt-10 bg-white shadow-xl rounded-xl">
-              <div className="flex items-center gap-2 mb-5 text-xl font-bold">
+          {/* SIDEBAR */}
+          <section className="flex flex-col gap-6 w-full xl:w-[30%]">
+            {/* NOTIFICATIONS */}
+            <div className="p-6 sm:p-8 bg-white shadow-lg rounded-2xl">
+              <div className="flex items-center gap-3 mb-6 text-xl font-bold">
                 <FontAwesomeIcon icon={faBell} className="text-[#1152D4]" />
+
                 <p>Notifications</p>
               </div>
 
-              <div className="grid grid-cols-[1fr_auto] gap-y-3">
+              <div className="space-y-6">
                 {[
                   {
                     title: "Course Announcements",
@@ -269,18 +306,25 @@ const Profile = () => {
                 ].map((item) => (
                   <div
                     key={item.title}
-                    className="col-span-2 flex justify-between items-center"
+                    className="flex items-start justify-between gap-4"
                   >
                     <div>
-                      <h3 className="text-lg font-semibold">{item.title}</h3>
-                      <p className="text-black/50">{item.desc}</p>
+                      <h3 className="font-semibold">{item.title}</h3>
+
+                      <p className="text-sm text-black/50">{item.desc}</p>
                     </div>
+
+                    {/* TOGGLE */}
                     <button
-                      className={`self-start px-4 py-1 rounded-full ${item.state ? "bg-green-600" : "bg-gray-300"} transform transition-all duration-200`}
+                      className={`relative w-14 h-7 rounded-full transition ${
+                        item.state ? "bg-green-600" : "bg-gray-300"
+                      }`}
                       onClick={() => item.setter(!item.state)}
                     >
                       <div
-                        className={`h-5 w-5 bg-white rounded-full ${item.state ? "translate-x-2.5" : "-translate-x-2.5"} transform transition-transform duration-200`}
+                        className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
+                          item.state ? "translate-x-8" : "translate-x-1"
+                        }`}
                       ></div>
                     </button>
                   </div>
@@ -289,13 +333,15 @@ const Profile = () => {
             </div>
 
             {/* HELP */}
-            <div className="flex flex-col gap-2 p-6 bg-white shadow-xl rounded-xl">
+            <div className="flex flex-col items-center text-center gap-3 p-6 bg-white shadow-lg rounded-2xl">
               <FontAwesomeIcon
                 icon={faCircleQuestion}
-                className="text-[#1152D4] text-2xl mx-auto"
+                className="text-[#1152D4] text-3xl"
               />
-              <h2 className="mx-auto text-xl font-semibold">Need help?</h2>
-              <p className="text-center">
+
+              <h2 className="text-xl font-semibold">Need help?</h2>
+
+              <p className="text-black/60">
                 Contact the registrar office for ID and department changes.
               </p>
             </div>
