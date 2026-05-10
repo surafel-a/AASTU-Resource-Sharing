@@ -192,14 +192,14 @@ const Library = () => {
                 fileType: "",
               })
             }
-            className="text-blue-600 font-bold hover:underline"
+            className="text-blue-600 font-bold hover:underline cursor-pointer"
           >
             Clear Filters
           </button>
 
           <button
             onClick={() => navigate("/courses")}
-            className="text-blue-600 font-bold hover:underline"
+            className="text-blue-600 font-bold hover:underline cursor-pointer"
           >
             See All Courses
           </button>

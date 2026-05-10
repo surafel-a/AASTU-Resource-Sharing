@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   faIdCard,
   faGraduationCap,
@@ -8,18 +7,17 @@ import {
   faBell,
   faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { useUser } from "../contexts/UserContext";
-
-import { toast } from "react-toastify";
 
 import { formatDate } from "../utilities/formatDate";
 
 import LoadingSpinner from "../components/LoadingSpinner";
+import { getInitials } from "../utilities/names";
 
 const Profile = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -148,7 +146,7 @@ const Profile = () => {
             </div>
 
             {/* USER INFO */}
-            <div className="mt-2 sm:ml-40">
+            <div className="mt-2">
               <h2 className="text-2xl sm:text-3xl font-bold mb-3">
                 {user?.name}
               </h2>

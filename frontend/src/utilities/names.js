@@ -5,6 +5,18 @@ export const splitName = (fullName) => {
   return firstName;
 };
 
+export const getInitials = (name) => {
+  if (!name) return "";
+
+  return name
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+};
+
 export const formatDepartment = (department) => {
   if (!department) return "N/A";
 

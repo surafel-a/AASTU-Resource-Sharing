@@ -1,13 +1,8 @@
 import { faBan, faPen, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getInitials } from "../../utilities/names";
 
 const UserRow = ({ name, ID, email, department, role, status }) => {
-  const nameParts = name.split(" ");
-  const initials = nameParts
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-
   const normalizedStatus = status.toLowerCase();
   const statusStyles = {
     active: "text-green-600 bg-green-600",
@@ -24,7 +19,7 @@ const UserRow = ({ name, ID, email, department, role, status }) => {
       </p>
       <div className="flex items-center gap-4 p-6">
         <p className="p-3 rounded-full bg-[#E7EEFB] font-bold text-lg">
-          {initials}
+          {getInitials(name)}
         </p>
         <div>
           <p className="text-xl font-bold ">{name}</p>

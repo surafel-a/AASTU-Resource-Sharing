@@ -14,7 +14,7 @@ import { useState } from "react";
 import Logo from "./Logo";
 
 import { useUser } from "../contexts/UserContext";
-import { formatDepartment } from "../utilities/names";
+import { formatDepartment, getInitials } from "../utilities/names";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -111,11 +111,20 @@ const Navbar = () => {
             className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-300 rounded-full cursor-pointer overflow-hidden"
             onClick={() => navigate("/profile")}
           >
-            <img
+            {/* <img
               src={user?.photo || "/default-avatar.png"}
               alt="Profile"
               className="w-full h-full object-cover"
-            />
+            /> */}
+            {user?.photo ? (
+              <img
+                src={user.photo}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="font-bold">{getInitials(user?.name)}</span>
+            )}
           </button>
 
           {/* DESKTOP DROPDOWN */}
@@ -130,7 +139,7 @@ const Navbar = () => {
             </button>
 
             {open && (
-              <div className="absolute right-0 top-12 w-44 bg-white shadow-lg rounded-xl py-2 z-50 border">
+              <div className="absolute right-0 top-12 w-44 bg-white shadow-lg rounded-md py-2 z-50 ring-1 ring-[#1152D4]">
                 <button
                   className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500"
                   onClick={handleLogout}

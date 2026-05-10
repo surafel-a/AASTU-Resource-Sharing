@@ -22,6 +22,9 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { resources, loading: resourceLoading } = useResource();
   const { users, loading: usersLoading } = useUser();
+  const pendingRequests = resources.filter(
+    (res) => res.status === "pending",
+  ).length;
 
   if (resourceLoading || usersLoading) {
     return <LoadingSpinner />;
@@ -65,7 +68,7 @@ const Dashboard = () => {
           iconSmall={faClock}
           iconDiscription="Priority"
           textTitle="Pending Approvals"
-          textValue="84"
+          textValue={pendingRequests}
           textDescription="24 urgent flags raised"
           colorPrimary="orange"
           colorSecondary="orange"

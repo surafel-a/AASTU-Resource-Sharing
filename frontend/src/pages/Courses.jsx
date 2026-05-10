@@ -21,8 +21,10 @@ import GoBackButton from "../components/GoBackButton";
 import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const { courses, loading } = useCourse();
   const navigate = useNavigate();
+  const coursesPerPage = 9;
 
   const departmentOptions = [
     ...new Set(courses.map((course) => course.department)),
@@ -40,6 +42,8 @@ const Courses = () => {
       ...prev,
       [key]: value,
     }));
+
+    setCurrentPage(1);
   };
 
   const filteredCourses = useMemo(() => {
@@ -66,6 +70,13 @@ const Courses = () => {
       return departmentMatch && yearMatch && semesterMatch && searchMatch;
     });
   }, [courses, filters]);
+
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+
+  const startIndex = (currentPage - 1) * coursesPerPage;
+  const endIndex = startIndex + coursesPerPage;
+
+  const currentCourses = filteredCourses.slice(startIndex, endIndex);
 
   return (
     <div className="bg-[#F6F6F8] min-h-screen py-10">
@@ -151,14 +162,16 @@ const Courses = () => {
 
               {/* CLEAR FILTERS */}
               <p
-                onClick={() =>
+                onClick={() => {
                   setFilters({
                     department: "",
                     year: "",
                     semester: "",
                     search: "",
-                  })
-                }
+                  });
+
+                  setCurrentPage(1);
+                }}
                 className="font-bold text-blue-600 cursor-pointer"
               >
                 Clear Filters
@@ -174,7 +187,7 @@ const Courses = () => {
               <LoadingSpinner fullScreen={false} />
             </div>
           ) : (
-            filteredCourses.map((course) => (
+            currentCourses.map((course) => (
               <CourseLists
                 key={course._id}
                 courseId={course._id}
@@ -193,36 +206,60 @@ const Courses = () => {
 
         <div className="flex items-center justify-between">
           <p className="text-xl font-medium">
-            Showing <span className="text-blue-600">10</span> of{" "}
-            <span className="text-blue-600">40</span> courses
+            Showing{" "}
+            <span className="text-blue-600">{currentCourses.length}</span> of{" "}
+            <span className="text-blue-600">{filteredCourses.length}</span>{" "}
+            courses
           </p>
 
+          {/* PAGINATION UI */}
           <div className="flex items-center justify-center gap-3 text-xl font-bold">
-            <div className="mr-2 cursor-pointer ">
+            {/* PREVIOUS BUTTON */}
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className={`mr-2 ${
+                currentPage === 1
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
               <FontAwesomeIcon
                 icon={faChevronLeft}
                 className="p-4 border-2 rounded-xl border-black/15 text-black/50"
               />
-            </div>
-            <p className="px-4 py-2 bg-[#1152D4] text-white border-2 border-black/15 rounded-xl cursor-pointer">
-              1
-            </p>
-            <p className="px-4 py-2 border-2 cursor-pointer rounded-xl border-black/15">
-              2
-            </p>
-            <p className="px-4 py-2 border-2 cursor-pointer rounded-xl border-black/15">
-              3
-            </p>
-            <p className="px-3 py-2">...</p>
-            <p className="px-4 py-2 border-2 cursor-pointer rounded-xl border-black/15">
-              12
-            </p>
-            <div className="ml-2 cursor-pointer">
+            </button>
+
+            {/* PAGE NUMBERS */}
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setCurrentPage(index + 1)}
+                className={`px-4 py-2 border-2 rounded-xl cursor-pointer ${
+                  currentPage === index + 1
+                    ? "bg-[#1152D4] text-white"
+                    : "border-black/15"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            {/* NEXT BUTTON */}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className={`ml-2 ${
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
               <FontAwesomeIcon
                 icon={faChevronRight}
                 className="p-4 border-2 rounded-xl border-black/15 text-black/70"
               />
-            </div>
+            </button>
           </div>
         </div>
       </div>
