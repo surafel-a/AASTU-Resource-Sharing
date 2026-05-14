@@ -158,7 +158,7 @@ const MyUploads = () => {
         {/* SEARCH + FILTERS */}
         <section className="bg-white p-5 sm:p-6 rounded-2xl shadow-lg mb-8 flex flex-col xl:flex-row gap-5 xl:items-center xl:justify-between">
           {/* SEARCH */}
-          <div className="relative w-full xl:max-w-md">
+          <div className="relative w-full xl:max-w-xl">
             <input
               className="w-full pl-10 pr-6 py-3 rounded-xl bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40"
               placeholder="Search your uploads..."

@@ -12,10 +12,68 @@ import UserOverview from "../components/admin/UserOverview";
 import UserRow from "../components/admin/UserRow";
 
 import { useUser } from "../contexts/UserContext";
+import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const UserManagement = () => {
   const { users, loading: usersLoading } = useUser();
+  const USERS_PER_PAGE = 5;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.universityId.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesDepartment =
+      selectedDepartment === "" || user.department === selectedDepartment;
+
+    const matchesRole =
+      selectedRole === "" ||
+      (user.role || "").toLowerCase() === selectedRole.toLowerCase();
+
+    const matchesStatus =
+      selectedStatus === "" ||
+      (user.status || "").toLowerCase() === selectedStatus.toLowerCase();
+
+    return matchesSearch && matchesDepartment && matchesRole && matchesStatus;
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * USERS_PER_PAGE;
+  const endIndex = startIndex + USERS_PER_PAGE;
+
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const adminsCount = users.filter(
+    (user) => user.role.toLowerCase() === "admin",
+  ).length;
+
+  const activeUsersCount = users.filter(
+    (user) => (user.status || "").toLowerCase() === "active",
+  ).length;
 
   if (usersLoading) {
     return <LoadingSpinner />;
@@ -44,20 +102,25 @@ const UserManagement = () => {
         />
         <UserOverview
           title="Active Students"
-          value="1,180"
+          value={activeUsersCount}
           description="+10%"
         />
-        <UserOverview title="Admins" value="60" description="+2%" />
+        <UserOverview title="Admins" value={adminsCount} description="+2%" />
       </section>
 
       {/* GRID CONTAINER */}
       <section className="grid items-center grid-cols-[auto_1.5fr_1fr_auto_1fr_1fr_auto] overflow-hidden bg-white shadow-xl rounded-xl">
         {/* TOP NAV */}
-        <div className="flex items-center col-span-7 gap-5 p-6 font-bold">
+        <div className="flex items-center col-span-7 gap-5 p-6 font-semibold">
           <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search by name, ID or department..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full pl-10 pr-6 py-2 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40"
             />
             <FontAwesomeIcon
@@ -68,7 +131,14 @@ const UserManagement = () => {
 
           <div className="flex items-center gap-2">
             {/* Departments */}
-            <select className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]">
+            <select
+              value={selectedDepartment}
+              onChange={(e) => {
+                setSelectedDepartment(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/50 focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
+            >
               <option value="">All Departments</option>
               <option>Software Engineering</option>
               <option>Electrical Engineering</option>
@@ -76,7 +146,14 @@ const UserManagement = () => {
             </select>
 
             {/* Roles */}
-            <select className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]">
+            <select
+              value={selectedRole}
+              onChange={(e) => {
+                setSelectedRole(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
+            >
               <option value="">All Roles</option>
               <option>Admin</option>
               <option>Instructor</option>
@@ -85,7 +162,7 @@ const UserManagement = () => {
 
             {/* More Filters */}
             <select className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]">
-              <option value="">More Filters</option>
+              <option value="">Status</option>
               <option>Active</option>
               <option>Suspended</option>
             </select>
@@ -119,63 +196,72 @@ const UserManagement = () => {
         </p>
 
         {/* USER ROW */}
-        <UserRow
-          name="Abebe Mengistu"
-          ID="ETS1511/14"
-          email="abebe.m@aastu.edu.et"
-          department="Software Engineering"
-          role="Student"
-          status="Active"
-        />
-        <UserRow
-          name="Hana Tadesse"
-          ID="ETS0423/14"
-          email="hana.t@aastu.edu.et"
-          department="Architecture"
-          role="Admin"
-          status="Active"
-        />
-        <UserRow
-          name="Kebede Belay"
-          ID="ETS1740/14"
-          email="kebede.b@aastu.edu.et"
-          department="Electrical Engineering"
-          role="Student"
-          status="Suspended"
-        />
-        <UserRow
-          name="Marta Alemu"
-          ID="ETS0670/14"
-          email="marta.a@aastu.edu.et"
-          department="Mechanical Engineering"
-          role="Student"
-          status="Active"
-        />
+
+        {currentUsers.map((user) => (
+          <UserRow
+            key={user._id}
+            userId={user._id}
+            name={user.name}
+            universityId={user.universityId}
+            email={user.email}
+            department={user.department}
+            role={user.role}
+            status={user.status || "Active"}
+            photo={user.photo}
+          />
+        ))}
 
         {/* FOOTER */}
         <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-7">
-          <p>Showing 4 of 12 resources</p>
-          <button className="flex items-center gap-2">
+          <p>
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)}{" "}
+            of {filteredUsers.length} users
+          </p>
+          <div className="flex items-center gap-2">
+            {/* PREVIOUS */}
             <FontAwesomeIcon
               icon={faChevronLeft}
-              className="p-3 transition-all duration-200 transform rounded-full cursor-pointer hover:bg-white hover:text-[#1152D4]"
+              onClick={handlePrevious}
+              className={`p-3 rounded-full transition-all duration-200 cursor-pointer
+      ${
+        currentPage === 1
+          ? "opacity-40 cursor-not-allowed"
+          : "hover:bg-white hover:text-[#1152D4]"
+      }`}
             />
 
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              1
-            </p>
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              2
-            </p>
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              3
-            </p>
+            {/* PAGE NUMBERS */}
+            {Array.from({ length: totalPages }, (_, index) => {
+              const page = index + 1;
 
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageClick(page)}
+                  className={`px-4 py-2 rounded-lg transition-all duration-200
+                  ${
+                    currentPage === page
+                      ? "bg-[#1152D4] text-white"
+                      : "hover:bg-[#1152D4] hover:text-white"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            {/* NEXT */}
             <FontAwesomeIcon
               icon={faChevronRight}
-              className="p-3 transition-all duration-200 transform rounded-full cursor-pointer hover:bg-white hover:text-[#1152D4]"
+              onClick={handleNext}
+              className={`p-3 rounded-full transition-all duration-200 cursor-pointer
+              ${
+                currentPage === totalPages
+                  ? "opacity-40 cursor-not-allowed"
+                  : "hover:bg-white hover:text-[#1152D4]"
+              }`}
             />
-          </button>
+          </div>
         </div>
       </section>
     </div>

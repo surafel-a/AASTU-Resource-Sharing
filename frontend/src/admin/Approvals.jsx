@@ -17,7 +17,25 @@ import { faClock, faFile } from "@fortawesome/free-regular-svg-icons";
 import ApprovalsOverview from "../components/admin/ApprovalsOverview";
 import ApprovalsPendings from "../components/admin/ApprovalsPendings";
 
+import { useResource } from "../contexts/ResourceContext";
+import { formatDate } from "../utilities/formatDate";
+import { formatFileSize } from "../utilities/formatFileSize";
+
 const Approvals = () => {
+  const { resources } = useResource();
+
+  const pendingResources = resources.filter(
+    (resource) => resource.status === "pending",
+  );
+
+  const approvedResources = resources.filter(
+    (resource) => resource.status === "approved",
+  );
+
+  const rejectedResources = resources.filter(
+    (resource) => resource.status === "rejected",
+  );
+
   return (
     <div className="px-10 py-6">
       <h1 className="text-3xl font-bold">Pending Approvals</h1>
@@ -45,7 +63,7 @@ const Approvals = () => {
           icon={faFilePdf}
           iconDiscription="+12%"
           textTitle="New Submissions"
-          textValue="48 Today"
+          textValue={`${pendingResources.length} Items`}
           colorPrimary="blue"
           colorSecondary="green"
         />
@@ -92,50 +110,21 @@ const Approvals = () => {
         </p>
 
         {/* APPROVALS PENDINGS */}
-        <ApprovalsPendings
-          iconFile={faFileLines}
-          color="blue"
-          course="CS101 Lecture Notes"
-          courseDescription="PDF - 4.2 MB"
-          contributor="Abebe Kebede"
-          department="Software Engineering"
-          day="Oct, 24"
-          year="2023"
-          time="02:15 PM"
-        />
-        <ApprovalsPendings
-          iconFile={faFilePowerpoint}
-          color="orange"
-          course="Engineering Mechanics"
-          courseDescription="eBook - 12.8 MB"
-          contributor="Sara Tekle"
-          department="Electrical Engineering"
-          day="Oct, 23"
-          year="2023"
-          time="09:30 AM"
-        />
-        <ApprovalsPendings
-          iconFile={faFileLines}
-          color="blue"
-          course="Lab Report Template"
-          courseDescription="DOCX - 45 KB"
-          contributor="Samuel Girma"
-          department="Architecture"
-          day="Oct, 22"
-          year="2023"
-          time="11:12 AM"
-        />
-        <ApprovalsPendings
-          iconFile={faFilePowerpoint}
-          color="orange"
-          course="Algorithms Quiz Solutions"
-          courseDescription="ZIP - 2.1 MB"
-          contributor="Elena Bekele"
-          department="Software Engineering"
-          day="Oct, 22"
-          year="2023"
-          time="04:45 PM"
-        />
+
+        {resources.map((resource) => (
+          <ApprovalsPendings
+            key={resource._id}
+            resourceId={resource._id}
+            fileType={resource.type}
+            fileSize={formatFileSize(resource.fileSize)}
+            color="orange"
+            course={resource.title}
+            contributor={resource?.uploadedBy?.name}
+            department={resource.department}
+            date={formatDate(resource.createdAt)}
+            status={resource.status}
+          />
+        ))}
 
         {/* FOOTER */}
         <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-6">

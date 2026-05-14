@@ -2,7 +2,16 @@ import { faBan, faPen, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getInitials } from "../../utilities/names";
 
-const UserRow = ({ name, ID, email, department, role, status }) => {
+const UserRow = ({
+  name,
+  universityId,
+  email,
+  userId,
+  department,
+  role,
+  status,
+  photo,
+}) => {
   const normalizedStatus = status.toLowerCase();
   const statusStyles = {
     active: "text-green-600 bg-green-600",
@@ -26,7 +35,7 @@ const UserRow = ({ name, ID, email, department, role, status }) => {
           <p className="font-medium text-black/70">{email}</p>
         </div>
       </div>
-      <p className="p-6 text-xl font-semibold">{ID}</p>
+      <p className="p-6 text-xl font-semibold">{universityId}</p>
       <p className="p-6 text-lg font-semibold">{department}</p>
       <div className="p-6">
         <p className="px-3 py-1 text-lg font-bold bg-[#e2e5e7] inline-block rounded-full">
@@ -45,15 +54,15 @@ const UserRow = ({ name, ID, email, department, role, status }) => {
       <div className="flex items-center p-6 text-xl text-black/50">
         <FontAwesomeIcon
           icon={faPen}
-          className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+          className="p-3 rounded-full cursor-pointer hover:text-green-600 hover:bg-green-100"
         />
         <FontAwesomeIcon
           icon={faUserShield}
-          className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+          className="p-3 rounded-full cursor-pointer hover:text-blue-600 hover:bg-blue-100"
         />
         <FontAwesomeIcon
           icon={faBan}
-          className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+          className="p-3 rounded-full cursor-pointer hover:text-red-600 hover:bg-red-100"
         />
       </div>
       <div className="col-span-7 border border-black/10"></div>
