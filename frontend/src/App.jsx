@@ -20,6 +20,8 @@ import Approvals from "./admin/Approvals";
 import UserManagement from "./admin/UserManagement";
 import ResourceManagement from "./admin/ResourceManagement";
 import ReportManagement from "./admin/ReportManagement";
+import Notification from "./admin/Notification";
+import AdminProfile from "./admin/AdminProfile";
 
 import CourseLayout from "./layouts/CourseLayout";
 import AddCourse from "./pages/AddCourse";
@@ -60,6 +62,8 @@ const App = () => {
           <Route path="resource-management" element={<ResourceManagement />} />
           <Route path="report-management" element={<ReportManagement />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="notifications" element={<Notification />} />
+          <Route path="profile" element={<AdminProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -5,9 +5,11 @@ import {
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { user } = useUser();
+  const navigate = useNavigate();
 
   return (
     <div className="flex items-center justify-between gap-10 px-6 py-2 border-b-3 border-black/15">
@@ -27,10 +29,12 @@ const Header = () => {
         <div className="flex items-center gap-1 text-xl text-black/50">
           <FontAwesomeIcon
             icon={faBell}
+            onClick={() => navigate("notifications")}
             className="p-3 bg-white hover:bg-[#F6F6F8] rounded-full transform transition-all duration-300 cursor-pointer"
           />
           <FontAwesomeIcon
             icon={faGear}
+            onClick={() => navigate("settings")}
             className="p-3 bg-white hover:bg-[#F6F6F8] rounded-full transform transition-all duration-300 cursor-pointer"
           />
         </div>
@@ -44,7 +48,7 @@ const Header = () => {
           </div>
           <button
             className="bg-green-400 rounded-full cursor-pointer w-15 h-15"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("profile")}
           ></button>
         </div>
       </div>

@@ -109,7 +109,7 @@ const Dashboard = () => {
                 <h2 className="text-xl">Fluid Mechanics Notes.pdf</h2>
                 <div className="flex items-center justify-between gap-3 mr-auto text-black/50">
                   <p>Approved by Admin</p>
-                  <p>. 2m age</p>
+                  <p>. 2m ago</p>
                 </div>
               </div>
             </div>
