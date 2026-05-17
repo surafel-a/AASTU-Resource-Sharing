@@ -1,3 +1,13 @@
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDownload,
@@ -29,6 +39,18 @@ const Dashboard = () => {
   if (resourceLoading || usersLoading) {
     return <LoadingSpinner />;
   }
+
+  const activeUsers = users.filter((user) => user.status === "active").length;
+
+  const uploadData = [
+    { day: "Mon", uploads: 12 },
+    { day: "Tue", uploads: 19 },
+    { day: "Wed", uploads: 8 },
+    { day: "Thu", uploads: 15 },
+    { day: "Fri", uploads: 25 },
+    { day: "Sat", uploads: 17 },
+    { day: "Sun", uploads: 30 },
+  ];
 
   return (
     <div className="px-10 py-6">
@@ -78,7 +100,7 @@ const Dashboard = () => {
           iconSmall={faArrowTrendUp}
           iconDiscription="+18%"
           textTitle="Active Users"
-          textValue={users.length}
+          textValue={activeUsers}
           textDescription="Active in last 24 hours"
           colorPrimary="blue"
           colorSecondary="green"
@@ -86,13 +108,38 @@ const Dashboard = () => {
 
         <section className="col-span-2 p-6 bg-white shadow-lg rounded-xl">
           <h1 className="text-2xl font-bold">Upload Trends</h1>
-          <div className="flex items-center justify-between mb-5">
+
+          <div className="flex items-center justify-between mb-8">
             <p className="text-lg font-semibold text-black/50">
               Resource submissions over the last 7 days.
             </p>
+
             <p className="flex items-center gap-4 px-4 py-2 font-semibold border border-gray-300 rounded-lg cursor-pointer">
               Last 7 days
             </p>
+          </div>
+
+          <div className="w-full h-[320px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={uploadData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+
+                <XAxis dataKey="day" tickLine={false} axisLine={false} />
+
+                <YAxis tickLine={false} axisLine={false} />
+
+                <Tooltip />
+
+                <Line
+                  type="monotone"
+                  dataKey="uploads"
+                  stroke="#1152D4"
+                  strokeWidth={4}
+                  dot={{ r: 5 }}
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </section>
 

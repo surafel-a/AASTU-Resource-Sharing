@@ -73,7 +73,7 @@ const Notification = () => {
       <section className="flex flex-col gap-4 mt-5">
         <div className="flex items-center justify-between px-5 py-3 bg-blue-100 rounded-lg">
           <div className="flex items-center gap-1">
-            <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
+            <div className="w-1 h-8 bg-blue-600 rounded-full"></div>
             <div className="w-12 h-12 mr-3 bg-red-600 rounded-full"></div>
             <div>
               <h2 className="text-lg font-bold">New Student Registered</h2>
@@ -88,7 +88,7 @@ const Notification = () => {
 
         <div className="flex items-center justify-between px-5 py-3 bg-blue-100 rounded-lg">
           <div className="flex items-center gap-1">
-            <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
+            <div className="w-1 h-8 bg-blue-600 rounded-full"></div>
             <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-3 text-green-600 bg-green-200 rounded-full">
               <FontAwesomeIcon icon={faCircleCheck} className="text-xl" />
             </div>
@@ -105,7 +105,7 @@ const Notification = () => {
 
         <div className="flex items-center justify-between px-5 py-3 bg-blue-100 rounded-lg">
           <div className="flex items-center gap-1">
-            <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
+            <div className="w-1 h-8 bg-blue-600 rounded-full"></div>
             <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-3 text-red-600 bg-red-200 rounded-full">
               <FontAwesomeIcon icon={faExclamationCircle} className="text-xl" />
             </div>

@@ -6,10 +6,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = (path) => location.pathname.includes(path);
 
   return (
     <div className="flex items-center justify-between gap-10 px-6 py-2 border-b-3 border-black/15">
@@ -30,12 +33,23 @@ const Header = () => {
           <FontAwesomeIcon
             icon={faBell}
             onClick={() => navigate("notifications")}
-            className="p-3 bg-white hover:bg-[#F6F6F8] rounded-full transform transition-all duration-300 cursor-pointer"
+            className={`p-3 rounded-full cursor-pointer transition-all duration-300
+            ${
+              isActive("notifications")
+                ? "text-blue-600 bg-blue-100"
+                : "text-black/50 bg-white hover:bg-[#F6F6F8]"
+            }`}
           />
+
           <FontAwesomeIcon
             icon={faGear}
             onClick={() => navigate("settings")}
-            className="p-3 bg-white hover:bg-[#F6F6F8] rounded-full transform transition-all duration-300 cursor-pointer"
+            className={`p-3 rounded-full cursor-pointer transition-all duration-300
+            ${
+              isActive("settings")
+                ? "text-blue-600 bg-blue-100"
+                : "text-black/50 bg-white hover:bg-[#F6F6F8]"
+            }`}
           />
         </div>
         <div className="w-0.5 h-10 bg-gray-200 rounded-full"></div>

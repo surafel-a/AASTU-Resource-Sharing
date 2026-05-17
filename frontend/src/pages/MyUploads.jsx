@@ -207,12 +207,16 @@ const MyUploads = () => {
           <div className="py-20 text-center bg-white border-2 border-dashed border-black/20 rounded-2xl">
             <div className="mb-3 text-4xl">📁</div>
 
-            <p className="text-xl font-semibold text-black/60">
-              No uploads yet
-            </p>
+            <h2 className="text-xl font-semibold text-black/60 capitalize">
+              {activeFilter === "all"
+                ? "No uploads yet"
+                : `No ${activeFilter} files`}
+            </h2>
 
             <p className="text-black/40">
-              Your uploaded resources will appear here.
+              {activeFilter === "all"
+                ? "Your uploaded resources will appear here."
+                : `You don't have any ${activeFilter} resources yet.`}
             </p>
 
             <button className="px-6 py-3 bg-[#1152D4] text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 mt-5 cursor-pointer">

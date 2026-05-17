@@ -7,6 +7,7 @@ const ResourceLibraries = ({
   fileIcon,
   fileName,
   fileType,
+  fileUrl,
   downloadIcon,
   calanderIcon,
   bookmarkIconR,
@@ -55,6 +56,27 @@ const ResourceLibraries = ({
 
   const fileColors = getFileTypeColor();
 
+  const handleResourceOpen = () => {
+    if (!fileUrl) return;
+
+    // Open PDFs, videos, images in browser
+    if (
+      fileType.toLowerCase() === "pdf" ||
+      fileType.toLowerCase() === "video"
+    ) {
+      window.open(fileUrl, "_blank");
+      return;
+    }
+
+    // Force download for docs/ppts
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="relative bg-white border shadow-md rounded-2xl border-black/10">
       <div className="mx-8 my-6">
@@ -99,7 +121,10 @@ const ResourceLibraries = ({
         </div>
 
         <div className="mb-10">
-          <button className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-[#EFEEFB] text-[#1152D4] rounded-lg mx-auto text-center cursor-pointer">
+          <button
+            onClick={handleResourceOpen}
+            className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-[#EFEEFB] text-[#1152D4] rounded-lg mx-auto text-center cursor-pointer"
+          >
             <FontAwesomeIcon icon={downloadIcon} />
             <p className="font-bold">Download Resource</p>
           </button>

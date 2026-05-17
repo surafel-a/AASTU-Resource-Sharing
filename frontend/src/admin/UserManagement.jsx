@@ -161,10 +161,19 @@ const UserManagement = () => {
             </select>
 
             {/* More Filters */}
-            <select className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]">
+            <select
+              value={selectedStatus}
+              onChange={(e) => {
+                setSelectedStatus(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 bg-[#F6F6F8] rounded-lg font-semibold text-black/60 focus:outline-none focus:ring-2 focus:ring-[#1152D4]"
+            >
               <option value="">Status</option>
               <option>Active</option>
+              <option>Inactive</option>
               <option>Suspended</option>
+              <option>Banned</option>
             </select>
           </div>
         </div>
@@ -206,7 +215,7 @@ const UserManagement = () => {
             email={user.email}
             department={user.department}
             role={user.role}
-            status={user.status || "Active"}
+            status={user.status}
             photo={user.photo}
           />
         ))}
