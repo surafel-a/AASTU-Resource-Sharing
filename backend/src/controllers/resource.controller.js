@@ -1,6 +1,7 @@
 import AppError from "../utils/appError.js";
 import APIFeatures from "../utils/apiFeatures.js";
 import Resource from "../models/resource.model.js";
+import Progress from "../models/progress.model.js";
 
 import cloudinary from "../config/cloudinary.js";
 import { streamUpload } from "../middlewares/multer.middleware.js";
@@ -115,6 +116,25 @@ export const updateResourceById = async (req, res, next) => {
   }
 };
 
+// export const deleteResourceById = async (req, res, next) => {
+//   try {
+//     const resource = await Resource.findByIdAndDelete(req.params.id);
+
+//     if (!resource) {
+//       return next(new AppError("No resource found with that ID", 404));
+//     }
+
+//     await cloudinary.uploader.destroy(resource.fileId);
+
+//     res.status(204).json({
+//       status: "success",
+//       data: null,
+//     });
+//   } catch (error) {
+//     return next(new AppError(error.message, 500));
+//   }
+// };
+
 export const deleteResourceById = async (req, res, next) => {
   try {
     const resource = await Resource.findByIdAndDelete(req.params.id);
@@ -123,7 +143,11 @@ export const deleteResourceById = async (req, res, next) => {
       return next(new AppError("No resource found with that ID", 404));
     }
 
+    // 1. delete file from cloudinary
     await cloudinary.uploader.destroy(resource.fileId);
+
+    // 2. delete ALL progress related to this resource
+    await Progress.deleteMany({ resource: req.params.id });
 
     res.status(204).json({
       status: "success",

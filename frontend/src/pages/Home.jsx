@@ -21,9 +21,11 @@ import { useNavigate } from "react-router-dom";
 // CONTEXTS
 import { useUser } from "../contexts/UserContext";
 import { useResource } from "../contexts/ResourceContext";
+import { useProgress } from "../contexts/ProgressContext";
 
 const Home = () => {
   const { user, loading: userLoading } = useUser();
+  const { progresses } = useProgress();
   const { resources, loading: resourceLoading } = useResource();
   const navigate = useNavigate();
 
@@ -129,23 +131,47 @@ const Home = () => {
         <div className="w-full xl:w-[40%] flex flex-col gap-5">
           <h2 className="text-2xl font-bold">Continue Reading</h2>
 
-          <ContinueReading
-            icon={faBookOpen}
-            course="Data Structure and Algorithms"
-            color="blue"
-            percentage="75"
-            pageRead="45"
-            totalPage="60"
-          />
+          {progresses.length > 0 ? (
+            progresses.slice(0, 3).map((item) => {
+              const totalPages = item.totalPages ?? 100;
+              const pageRead = Math.round((item.progress / 100) * totalPages);
 
-          <ContinueReading
-            icon={faBookOpen}
-            course="Compiler Design Notes"
-            color="orange"
-            pageRead="2"
-            totalPage="10"
-            percentage="20"
-          />
+              return (
+                <ContinueReading
+                  key={item._id}
+                  icon={faBookOpen}
+                  course={item.resource?.title}
+                  color="blue"
+                  percentage={item.progress}
+                  pageRead={pageRead}
+                  totalPage={totalPages}
+                />
+              );
+            })
+          ) : (
+            <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center text-center">
+              <FontAwesomeIcon
+                icon={faBookOpen}
+                className="text-5xl text-[#1152D4] mb-4"
+              />
+
+              <h3 className="text-2xl font-bold mb-2">
+                No Reading Progress Yet
+              </h3>
+
+              <p className="text-black/50 font-semibold max-w-sm">
+                Start reading resources from the library and your progress will
+                appear here.
+              </p>
+
+              <button
+                onClick={() => navigate("/library")}
+                className="mt-6 bg-[#1152D4] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition cursor-pointer"
+              >
+                Explore Resources
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

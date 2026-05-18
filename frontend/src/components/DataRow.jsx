@@ -46,6 +46,7 @@ const DataRow = ({
     doc: "text-blue-600 bg-blue-100",
     docx: "text-blue-600 bg-blue-100",
   };
+  const [day, year, time] = dateUploaded.split(", ");
 
   return (
     <>
@@ -71,9 +72,14 @@ const DataRow = ({
         </p>
       </div>
 
-      <p className="inline p-6 text-xl font-bold text-black/50">
-        {dateUploaded}
-      </p>
+      <div className="flex flex-col p-6 ">
+        <p className="text-xl font-bold text-black/50">
+          <span>{day}, </span>
+          <span className="text-base">{year}</span>
+        </p>
+
+        <p className="text-base">{time}</p>
+      </div>
 
       <div className="p-6">
         <p

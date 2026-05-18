@@ -27,6 +27,7 @@ import CourseLayout from "./layouts/CourseLayout";
 import AddCourse from "./pages/AddCourse";
 import UpdateResource from "./pages/UpdateResource";
 import ResourceLayout from "./layouts/ResourceLayout";
+import Reader from "./pages/Reader";
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
           </Route>
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/reader/:id" element={<Reader />} />
         </Route>
 
         {/* Admin Routes */}

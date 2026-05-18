@@ -80,6 +80,18 @@ export function ResourceProvider({ children }) {
     }
   };
 
+  // GET RESOURCE BY ID
+  const getResourceById = async (id) => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/api/v1/resources/${id}`);
+
+      return data.data.resource;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   // GET ALL RESOURCES
   const getAllResources = async () => {
     try {
@@ -117,6 +129,7 @@ export function ResourceProvider({ children }) {
     myResources,
     loading,
     getAllResources,
+    getResourceById,
     createResource,
     updateResource,
     deleteResource,

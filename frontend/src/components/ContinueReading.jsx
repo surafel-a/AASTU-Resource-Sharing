@@ -1,7 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 
-const ContinueReading = ({ icon, color, course, percentage, pageRead, totalPage }) => {
+const ContinueReading = ({
+  icon,
+  color,
+  course,
+  percentage,
+  pageRead,
+  totalPage,
+}) => {
   const colorStyles = {
     blue: {
       bgLight: "bg-blue-100",
@@ -20,7 +27,7 @@ const ContinueReading = ({ icon, color, course, percentage, pageRead, totalPage 
       textDark: "text-red-900",
       bgBar: "bg-red-600",
       percentText: "text-red-800",
-    }
+    },
   };
   const selectedColor = colorStyles[color];
 
@@ -38,13 +45,20 @@ const ContinueReading = ({ icon, color, course, percentage, pageRead, totalPage 
         </div>
       </div>
 
-      <div className={`h-2 bg-${color}-600 rounded-full mb-2`}></div>
+      <div className="h-2 rounded-full mb-2 bg-gray-200">
+        <div
+          className={`h-2 rounded-full ${selectedColor.bgBar} transition-all`}
+          style={{ width: `${percentage}%` }}
+        ></div>
+      </div>
 
       <div className="flex justify-between items-center">
         <div className="font-semibold text-black/50">
           Page {pageRead} of {totalPage}
         </div>
-        <div className={`font-bold ${selectedColor.percentText}`}>{percentage}%</div>
+        <div className={`font-bold ${selectedColor.percentText}`}>
+          {percentage}%
+        </div>
       </div>
     </div>
   );
