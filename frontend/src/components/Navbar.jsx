@@ -17,10 +17,12 @@ import { useUser } from "../contexts/UserContext";
 import { formatDepartment, getInitials } from "../utilities/names";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
+import { useProgress } from "../contexts/ProgressContext";
 
 const Navbar = () => {
   const { user } = useUser();
   const { logout } = useAuth();
+  const { clearProgress } = useProgress();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -47,6 +49,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setOpen(false);
     setMobileMenu(false);
+    clearProgress();
 
     logout();
 
@@ -55,7 +58,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-white shadow-sm px-4 sm:px-6 lg:px-10 py-4 relative">
+    <nav className="w-full bg-white shadow-sm px-4 sm:px-6 lg:px-10 py-4 relative sticky top-0 z-50">
       <div className="flex items-center justify-between gap-4">
         {/* LEFT */}
         <div className="flex items-center gap-4">
@@ -108,14 +111,9 @@ const Navbar = () => {
 
           {/* PROFILE */}
           <button
-            className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-300 rounded-full cursor-pointer overflow-hidden"
+            className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-200 rounded-full cursor-pointer overflow-hidden"
             onClick={() => navigate("/profile")}
           >
-            {/* <img
-              src={user?.photo || "/default-avatar.png"}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            /> */}
             {user?.photo ? (
               <img
                 src={user.photo}

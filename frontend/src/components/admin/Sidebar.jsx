@@ -12,13 +12,16 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { useProgress } from "../../contexts/ProgressContext";
 
 const Sidebar = () => {
   const { logout } = useAuth();
+  const { clearProgress } = useProgress();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
+      clearProgress();
       await logout();
       navigate("/login");
       toast.success("Logged out successfully");

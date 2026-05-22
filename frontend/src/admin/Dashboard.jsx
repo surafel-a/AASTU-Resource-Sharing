@@ -144,72 +144,73 @@ const Dashboard = () => {
         </section>
 
         {/* RECENT APPROVALS */}
-        <section className="p-6 bg-white shadow-lg rounded-xl">
-          <h1 className="mb-5 text-2xl font-bold">Recent Approvals</h1>
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-[auto_1fr] gap-5">
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                className="p-2 text-xl text-green-600 bg-green-100 rounded-lg"
-              />
-              <div className="flex flex-col font-bold">
-                <h2 className="text-xl">Fluid Mechanics Notes.pdf</h2>
-                <div className="flex items-center justify-between gap-3 mr-auto text-black/50">
-                  <p>Approved by Admin</p>
-                  <p>. 2m ago</p>
-                </div>
-              </div>
-            </div>
+        <section className="p-6 bg-white shadow-lg rounded-xl flex flex-col justify-between">
+          <div>
+            <h1 className="mb-5 text-2xl font-bold">Recent Approvals</h1>
+            <div className="flex flex-col gap-5">
+              {(() => {
+                const reviewed = resources
+                  .filter(
+                    (res) =>
+                      res.status === "approved" || res.status === "rejected",
+                  )
+                  .slice(0, 5);
 
-            <div className="grid grid-cols-[auto_1fr] gap-5">
-              <FontAwesomeIcon
-                icon={faCircleXmark}
-                className="p-2 text-xl text-red-600 bg-red-100 rounded-lg"
-              />
-              <div className="flex flex-col font-bold">
-                <h2 className="text-xl">Final Exam Key.</h2>
-                <div className="flex items-center justify-between gap-3 mr-auto text-black/50">
-                  <p>Rejected: Policy Violation</p>
-                  <p>. 15m age</p>
-                </div>
-              </div>
-            </div>
+                if (reviewed.length === 0) {
+                  return (
+                    <div className="flex flex-col items-center justify-center py-8 text-center text-black/40">
+                      <FontAwesomeIcon
+                        icon={faClock}
+                        className="text-4xl mb-3"
+                      />
+                      <p className="font-semibold text-lg">No approvals yet</p>
+                      <p className="text-sm">
+                        Resources that are approved or rejected will appear
+                        here.
+                      </p>
+                    </div>
+                  );
+                }
 
-            <div className="grid grid-cols-[auto_1fr] gap-5">
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                className="p-2 text-xl text-green-600 bg-green-100 rounded-lg"
-              />
-              <div className="flex flex-col font-bold">
-                <h2 className="text-xl">Logic Circuit Lab Report.pdf</h2>
-                <div className="flex items-center justify-between gap-3 mr-auto text-black/50">
-                  <p>Approved by Admin</p>
-                  <p>. 1h age</p>
-                </div>
-              </div>
+                return reviewed.map((res) => (
+                  <div
+                    key={res._id}
+                    className="grid grid-cols-[auto_1fr] gap-5"
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        res.status === "approved"
+                          ? faCircleCheck
+                          : faCircleXmark
+                      }
+                      className={`p-2 text-xl rounded-lg ${
+                        res.status === "approved"
+                          ? "text-green-600 bg-green-100"
+                          : "text-red-600 bg-red-100"
+                      }`}
+                    />
+                    <div className="flex flex-col font-bold">
+                      <h2 className="text-xl">{res.title}</h2>
+                      <div className="flex items-center gap-3 text-black/50">
+                        <p>
+                          {res.status === "approved"
+                            ? "Approved by Admin"
+                            : "Rejected: Policy Violation"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
             </div>
-
-            <div className="grid grid-cols-[auto_1fr] gap-5">
-              <FontAwesomeIcon
-                icon={faCircleXmark}
-                className="p-2 text-xl text-red-600 bg-red-100 rounded-lg"
-              />
-              <div className="flex flex-col font-bold">
-                <h2 className="text-xl">Survey Methods.mp4</h2>
-                <div className="flex items-center justify-between gap-3 mr-auto text-black/50">
-                  <p>Approved by Admin</p>
-                  <p>. 3h age</p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              className="cursor-pointer text-[#1152D4] font-bold text-xl px-4 py-2 border border-gray-200 border-dashed rounded-lg"
-              onClick={() => navigate("/admin/approvals")}
-            >
-              View All Submissions
-            </button>
           </div>
+
+          <button
+            className="mt-5 cursor-pointer text-[#1152D4] font-bold text-xl px-4 py-2 border-3 border-gray-300 border-dashed rounded-lg"
+            onClick={() => navigate("/admin/approvals")}
+          >
+            View All Submissions
+          </button>
         </section>
       </section>
 

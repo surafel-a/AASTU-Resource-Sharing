@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useResource } from "../../contexts/ResourceContext";
 import { useState } from "react";
+import { getInitials } from "../../utilities/names";
 
 const ApprovalsPendings = ({
   resourceId,
@@ -118,9 +119,21 @@ const ApprovalsPendings = ({
 
       {/* CONTRIBUTOR */}
       <div className="flex items-center gap-2 p-6">
-        <div className="w-10 h-10 bg-red-600 rounded-full"></div>
+        <div className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-gray-300">
+          {contributor?.photo ? (
+            <img
+              src={contributor.photo}
+              alt={contributor.name}
+              className="w-full h-full object-cover "
+            />
+          ) : (
+            <p className="font-bold text-md">
+              {getInitials(contributor?.name)}
+            </p>
+          )}
+        </div>
 
-        <p className="text-lg font-bold">{contributor}</p>
+        <p className="text-lg font-bold">{contributor?.name}</p>
       </div>
 
       {/* DEPARTMENT */}

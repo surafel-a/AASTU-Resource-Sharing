@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import UploadResource from "./pages/UploadResource";
+import EditCourse from "./pages/EditCourse";
 
 // ADMIN SIDE
 import Settings from "./admin/Settings";
@@ -44,7 +45,7 @@ const App = () => {
           <Route path="/courses" element={<CourseLayout />}>
             <Route index element={<Courses />} />
             <Route path="add" element={<AddCourse />} />
-            <Route path=":courseId/edit" element={<UpdateResource />} />
+            <Route path=":courseId/edit" element={<EditCourse />} />
           </Route>
           <Route path="/uploads" element={<ResourceLayout />}>
             <Route index element={<MyUploads />} />

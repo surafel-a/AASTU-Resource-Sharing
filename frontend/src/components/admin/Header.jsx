@@ -8,6 +8,8 @@ import { useUser } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
+import { getInitials } from "../../utilities/names";
+
 const Header = () => {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -61,9 +63,19 @@ const Header = () => {
             </p>
           </div>
           <button
-            className="bg-green-400 rounded-full cursor-pointer w-15 h-15"
+            className="bg-gray-200 rounded-full cursor-pointer w-15 h-15 overflow-hidden"
             onClick={() => navigate("profile")}
-          ></button>
+          >
+            {user?.photo ? (
+              <img
+                src={user.photo}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <p className="font-bold text-xl">{getInitials(user?.name)}</p>
+            )}
+          </button>
         </div>
       </div>
     </div>

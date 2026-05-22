@@ -49,6 +49,9 @@ export const ProgressProvider = ({ children }) => {
     }
   };
 
+  // CLEAR PROGRESS WHEN LOGGED OUT
+  const clearProgress = () => setProgresses([]);
+
   useEffect(() => {
     getAllProgress();
   }, []);
@@ -60,6 +63,7 @@ export const ProgressProvider = ({ children }) => {
         loading,
         saveProgress,
         getAllProgress,
+        clearProgress,
       }}
     >
       {children}

@@ -47,7 +47,7 @@ export const getAllResources = async (req, res, next) => {
       .limitFields()
       .paginate();
     const resources = await features.query
-      .populate("uploadedBy", "name department")
+      .populate("uploadedBy", "name department photo")
       .populate("course", "code name courseInstructor year");
 
     res.status(200).json({
@@ -63,7 +63,7 @@ export const getAllResources = async (req, res, next) => {
 export const getResourceById = async (req, res, next) => {
   try {
     const resource = await Resource.findById(req.params.id)
-      .populate("uploadedBy", "name department")
+      .populate("uploadedBy", "name department photo")
       .populate("course", "code name");
 
     if (!resource) {
@@ -115,25 +115,6 @@ export const updateResourceById = async (req, res, next) => {
     return next(new AppError(error.message, 500));
   }
 };
-
-// export const deleteResourceById = async (req, res, next) => {
-//   try {
-//     const resource = await Resource.findByIdAndDelete(req.params.id);
-
-//     if (!resource) {
-//       return next(new AppError("No resource found with that ID", 404));
-//     }
-
-//     await cloudinary.uploader.destroy(resource.fileId);
-
-//     res.status(204).json({
-//       status: "success",
-//       data: null,
-//     });
-//   } catch (error) {
-//     return next(new AppError(error.message, 500));
-//   }
-// };
 
 export const deleteResourceById = async (req, res, next) => {
   try {

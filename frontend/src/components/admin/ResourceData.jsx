@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useResource } from "../../contexts/ResourceContext";
+import { getInitials } from "../../utilities/names";
 
 const ResourceData = ({
   resourceId,
@@ -28,10 +29,6 @@ const ResourceData = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [visible, setVisible] = useState(visibility || "");
   const nameParts = author?.split(" ") || [];
-  const initials = nameParts
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
 
   const normalizedStatus = (status || "").toLowerCase();
   const statusStyles = {
@@ -141,7 +138,7 @@ const ResourceData = ({
       </div>
       <div className="flex items-center gap-4 p-6">
         <p className="p-3 rounded-full bg-[#E7EEFB] font-bold text-md">
-          {initials}
+          {getInitials(author)}
         </p>
         <div>
           <p className="text-xl font-bold ">{author}</p>

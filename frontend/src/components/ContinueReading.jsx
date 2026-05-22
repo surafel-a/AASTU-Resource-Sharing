@@ -8,6 +8,7 @@ const ContinueReading = ({
   percentage,
   pageRead,
   totalPage,
+  onClick,
 }) => {
   const colorStyles = {
     blue: {
@@ -32,7 +33,10 @@ const ContinueReading = ({
   const selectedColor = colorStyles[color];
 
   return (
-    <div className="rounded-xl p-5 bg-white shadow-xl">
+    <div
+      onClick={onClick}
+      className="rounded-xl p-5 bg-white shadow-xl cursor-pointer hover:transition-transform transform hover:scale-[1.02] duration-200"
+    >
       <div className="flex items-center gap-5 mb-5">
         <div>
           <FontAwesomeIcon

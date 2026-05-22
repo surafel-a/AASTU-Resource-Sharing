@@ -9,7 +9,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 const EditCourse = () => {
   const { courseId } = useParams();
-  const { updateCourse, courses } = useCourse();
+  const { updateCourse, courses, loading: courseLoading } = useCourse();
   const navigate = useNavigate();
 
   const selectedCourse = courses.find((c) => c._id === courseId);
@@ -101,6 +101,9 @@ const EditCourse = () => {
       });
     }
   };
+
+  // if (courseLoading) return <LoadingSpinner />;
+  // if (!selectedCourse) return <LoadingSpinner />;
 
   return (
     <div className="bg-[#F6F6F8] min-h-screen py-10">

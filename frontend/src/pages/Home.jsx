@@ -145,6 +145,7 @@ const Home = () => {
                   percentage={item.progress}
                   pageRead={pageRead}
                   totalPage={totalPages}
+                  onClick={() => navigate(`/reader/${item.resource?._id}`)}
                 />
               );
             })

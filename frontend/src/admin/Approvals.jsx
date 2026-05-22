@@ -14,15 +14,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faClock, faFile } from "@fortawesome/free-regular-svg-icons";
 
+// ROUTER
+import { useSearchParams } from "react-router-dom";
+import { useMemo } from "react";
+
+// COMPONENTS
 import ApprovalsOverview from "../components/admin/ApprovalsOverview";
 import ApprovalsPendings from "../components/admin/ApprovalsPendings";
 
+// CONTEXTS
 import { useResource } from "../contexts/ResourceContext";
+
+// UTILITIES
 import { formatDate } from "../utilities/formatDate";
 import { formatFileSize } from "../utilities/formatFileSize";
 
 const Approvals = () => {
   const { resources } = useResource();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const pendingResources = resources.filter(
     (resource) => resource.status === "pending",
@@ -35,6 +44,28 @@ const Approvals = () => {
   const rejectedResources = resources.filter(
     (resource) => resource.status === "rejected",
   );
+
+  // FOOTER NAVIGATION LOGIC
+  const currentPage = parseInt(searchParams.get("page")) || 1;
+  const itemsPerPage = 10;
+
+  const totalPages = useMemo(
+    () => Math.ceil(resources.length / itemsPerPage),
+    [resources.length],
+  );
+  const startIndex = useMemo(
+    () => (currentPage - 1) * itemsPerPage,
+    [currentPage],
+  );
+  const paginatedResources = useMemo(
+    () => resources.slice(startIndex, startIndex + itemsPerPage),
+    [resources, startIndex],
+  );
+
+  const goToPage = (page) => {
+    const safePage = Math.max(1, Math.min(page, totalPages));
+    setSearchParams({ page: safePage });
+  };
 
   return (
     <div className="px-10 py-6">
@@ -111,7 +142,7 @@ const Approvals = () => {
 
         {/* APPROVALS PENDINGS */}
 
-        {resources.map((resource) => (
+        {paginatedResources.map((resource) => (
           <ApprovalsPendings
             key={resource._id}
             resourceId={resource._id}
@@ -119,7 +150,7 @@ const Approvals = () => {
             fileSize={formatFileSize(resource.fileSize)}
             color="orange"
             course={resource.title}
-            contributor={resource?.uploadedBy?.name}
+            contributor={resource?.uploadedBy}
             department={resource.department}
             date={formatDate(resource.createdAt)}
             status={resource.status}
@@ -128,28 +159,39 @@ const Approvals = () => {
 
         {/* FOOTER */}
         <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-6">
-          <p>Showing 4 of 12 resources</p>
-          <button className="flex items-center gap-2">
+          <p>
+            Showing {startIndex + 1} to{" "}
+            {Math.min(startIndex + itemsPerPage, resources.length)} of{" "}
+            {resources.length} resources
+          </p>
+          <div className="flex items-center gap-2">
             <FontAwesomeIcon
               icon={faChevronLeft}
+              onClick={() => goToPage(currentPage - 1)}
               className="p-3 transition-all duration-200 transform rounded-full cursor-pointer hover:bg-white hover:text-[#1152D4]"
             />
 
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              1
-            </p>
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              2
-            </p>
-            <p className="px-4 py-2 rounded-lg cursor-pointer border-black/30  hover:bg-[#1152D4] hover:text-white">
-              3
-            </p>
+            {Array.from({ length: totalPages }, (_, index) => {
+              const page = index + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1152D4] hover:text-white ${
+                    currentPage === page ? "bg-[#1152D4] text-white" : ""
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
 
             <FontAwesomeIcon
               icon={faChevronRight}
+              onClick={() => goToPage(currentPage + 1)}
               className="p-3 transition-all duration-200 transform rounded-full cursor-pointer hover:bg-white hover:text-[#1152D4]"
             />
-          </button>
+          </div>
         </div>
       </section>
     </div>
