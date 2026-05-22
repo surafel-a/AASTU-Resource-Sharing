@@ -9,6 +9,8 @@ import reviewRouter from "./routes/review.routes.js";
 import resourceRouter from "./routes/resource.routes.js";
 import bookmarkRouter from "./routes/bookmark.routes.js";
 import progressRouter from "./routes/progress.routes.js";
+import commentRouter from "./routes/comment.routes.js"; // NEW
+import reportRouter from "./routes/report.routes.js"; // NEW
 
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 
@@ -16,8 +18,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // Adjust this to your frontend URL
-    credentials: true, // Allow cookies to be sent
+    origin: process.env.CLIENT_URL,
+    credentials: true,
   }),
 );
 app.use(express.json());
@@ -30,6 +32,8 @@ app.use("/api/v1/resources", resourceRouter);
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/bookmarks", bookmarkRouter);
 app.use("/api/v1/progress", progressRouter);
+app.use("/api/v1/comments", commentRouter); // NEW
+app.use("/api/v1/reports", reportRouter); // NEW
 
 // Global Error Handling Middleware
 app.use(globalErrorHandler);

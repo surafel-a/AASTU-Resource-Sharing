@@ -6,6 +6,9 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
+import ReviewSection from "../components/ReviewSection";
+import CommentSection from "../components/CommentSection";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const Reader = () => {
@@ -41,12 +44,10 @@ const Reader = () => {
   // SAVE PROGRESS WITH DEBOUNCE
   useEffect(() => {
     if (!numPages) return;
-
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       saveProgress(id, percentage, numPages);
     }, 1000);
-
     return () => clearTimeout(timeoutRef.current);
   }, [currentPage, numPages]);
 
@@ -60,7 +61,7 @@ const Reader = () => {
 
   if (!resource) {
     return (
-      <div className="w-full h-screen flex justify-center items-center">
+      <div className="w-full h-screen flex justify-center items-center bg-gray-900 text-white">
         Loading...
       </div>
     );
@@ -68,7 +69,7 @@ const Reader = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-900 flex flex-col items-center">
-      {/* TOP PROGRESS BAR */}
+      {/* ── TOP PROGRESS BAR ── */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-700 z-50">
         <div
           className="h-full bg-blue-500 transition-all"
@@ -76,15 +77,15 @@ const Reader = () => {
         />
       </div>
 
-      {/* PAGE INFO BAR */}
+      {/* ── PAGE INFO BAR ── */}
       <div className="fixed top-1 left-0 w-full z-50 flex justify-center">
         <div className="bg-black/60 text-white text-sm px-4 py-1 rounded-full mt-2">
           Page {currentPage} of {numPages ?? "..."} — {percentage}% read
         </div>
       </div>
 
-      {/* PDF DOCUMENT */}
-      <div className="mt-16 mb-24">
+      {/* ── PDF DOCUMENT ── */}
+      <div className="mt-16 mb-8">
         <Document
           file={resource.fileUrl}
           onLoadSuccess={onDocumentLoadSuccess}
@@ -99,8 +100,8 @@ const Reader = () => {
         </Document>
       </div>
 
-      {/* NAVIGATION CONTROLS */}
-      <div className="fixed bottom-0 left-0 w-full bg-gray-900/90 backdrop-blur py-4 flex justify-center items-center gap-6 z-50">
+      {/* ── NAVIGATION CONTROLS ── */}
+      <div className="w-full max-w-3xl px-4 flex justify-center items-center gap-6 mb-10">
         <button
           onClick={goToPrevPage}
           disabled={currentPage <= 1}
@@ -108,11 +109,9 @@ const Reader = () => {
         >
           ← Prev
         </button>
-
         <span className="text-white font-semibold">
           Page {currentPage} of {numPages ?? "..."}
         </span>
-
         <button
           onClick={goToNextPage}
           disabled={currentPage >= numPages}
@@ -120,6 +119,25 @@ const Reader = () => {
         >
           Next →
         </button>
+      </div>
+
+      {/* ── REVIEW + COMMENT SECTION ── */}
+      {/* Lives below the PDF — user scrolls down to see it */}
+      <div className="w-full max-w-3xl px-4 pb-20 space-y-4">
+        {/* Divider with label */}
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="text-white/30 text-sm font-semibold uppercase tracking-widest">
+            {resource.title}
+          </span>
+          <div className="flex-1 h-px bg-white/10" />
+        </div>
+
+        {/* Like / Dislike / Rate / Share / Report */}
+        <ReviewSection resourceId={id} resourceTitle={resource.title} />
+
+        {/* Comments */}
+        <CommentSection resourceId={id} />
       </div>
     </div>
   );

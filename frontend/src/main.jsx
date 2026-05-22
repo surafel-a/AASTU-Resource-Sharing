@@ -10,6 +10,9 @@ import { CourseProvider } from "./contexts/CourseContext.jsx";
 import { ResourceProvider } from "./contexts/ResourceContext.jsx";
 import { BookmarkProvider } from "./contexts/BookmarkContext.jsx";
 import { ProgressProvider } from "./contexts/ProgressContext.jsx";
+import { ReviewProvider } from "./contexts/ReviewContext.jsx"; // NEW
+import { CommentProvider } from "./contexts/CommentContext.jsx"; // NEW
+import { ReportProvider } from "./contexts/ReportContext.jsx"; // NEW
 
 // Toast notifications
 import { ToastContainer } from "react-toastify";
@@ -23,8 +26,14 @@ createRoot(document.getElementById("root")).render(
           <ResourceProvider>
             <BookmarkProvider>
               <ProgressProvider>
-                <App />
-                <ToastContainer position="top-right" autoClose={3000} />
+                <ReviewProvider>
+                  <CommentProvider>
+                    <ReportProvider>
+                      <App />
+                      <ToastContainer position="top-right" autoClose={3000} />
+                    </ReportProvider>
+                  </CommentProvider>
+                </ReviewProvider>
               </ProgressProvider>
             </BookmarkProvider>
           </ResourceProvider>

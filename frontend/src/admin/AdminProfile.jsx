@@ -92,7 +92,7 @@ const AdminProfile = () => {
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-6">
           {/* PERSONAL INFORMATION */}
-          <div className="self-start overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
+          <div className="self-start w-full overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
             <div className="p-6 bg-[#F6F6F8] border-b-3 border-b-gray-300 flex items-center gap-4">
               <FontAwesomeIcon
                 icon={faUser}
