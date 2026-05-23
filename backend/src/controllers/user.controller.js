@@ -1,6 +1,7 @@
 import AppError from "../utils/appError.js";
 import APIFeatures from "../utils/apiFeatures.js";
 import User from "../models/user.model.js";
+import Resource from "../models/resource.model.js";
 
 import { streamUpload } from "../middlewares/multer.middleware.js";
 import cloudinary from "../config/cloudinary.js";
@@ -79,6 +80,34 @@ export const deleteUserById = async (req, res, next) => {
   }
 };
 
+// NEW: Real stats for the Admin Profile page
+export const getAdminStats = async (req, res, next) => {
+  try {
+    const adminId = req.user._id;
+
+    const [totalApprovals, totalUploads, totalUsers] = await Promise.all([
+      // Resources that this admin approved (status = approved, we count all approved resources)
+      Resource.countDocuments({ status: "approved" }),
+      // Resources uploaded by this admin
+      Resource.countDocuments({ uploadedBy: adminId }),
+      // Total registered users
+      User.countDocuments({ role: "student" }),
+    ]);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        totalApprovals,
+        totalUploads,
+        totalUsers,
+        lastLogin: req.user.updatedAt, // approximate — updatedAt changes on login
+      },
+    });
+  } catch (error) {
+    return next(new AppError("Failed to fetch admin stats", 500));
+  }
+};
+
 /* ============================ USER CONTROLLERS ============================ */
 export const getMe = async (req, res, next) => {
   try {
@@ -104,7 +133,7 @@ export const updateMe = async (req, res, next) => {
     forbiddenFields.forEach((field) => delete req.body[field]);
 
     if (req.file) {
-      const currentUser = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.user._id);
 
       if (currentUser?.photoId) {
         await cloudinary.uploader.destroy(currentUser.photoId);

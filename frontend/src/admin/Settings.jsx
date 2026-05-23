@@ -16,21 +16,216 @@ import {
   faShieldAlt,
   faSliders,
   faUser,
+  faEye,
+  faEyeSlash,
+  faSun,
+  faCheck,
+  faTimes,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAdminSettings } from "../contexts/AdminSettingsContext";
+import { useUser } from "../contexts/UserContext";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
+
+const Toggle = ({ checked, onChange }) => (
+  <button
+    className={`relative w-14 h-7 rounded-full transition cursor-pointer flex-shrink-0 ${
+      checked ? "bg-green-500" : "bg-gray-300"
+    }`}
+    onClick={() => onChange(!checked)}
+  >
+    <div
+      className={`absolute top-1 h-5 w-5 bg-white rounded-full shadow transition-transform duration-200 ${
+        checked ? "translate-x-8" : "translate-x-1"
+      }`}
+    />
+  </button>
+);
 
 const Settings = () => {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const {
+    settings,
+    loading,
+    updateSettings,
+    updateAccountInfo,
+    fetchSettings,
+  } = useAdminSettings();
+  const { user, fetchUser } = useUser();
+  const { logout } = useAuth();
+
+  // ── Account form ──────────────────────────────────────────────────────────
+  const [formData, setFormData] = useState({ name: "", phoneNumber: "" });
+  const [hasAccountChanges, setHasAccountChanges] = useState(false);
+
+  // ── Password ──────────────────────────────────────────────────────────────
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [showPw, setShowPw] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
+  // ── Toggles (sourced from DB settings) ───────────────────────────────────
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState("English (US)");
+  const [timezone, setTimezone] = useState("UTC +3 (EAT)");
+  const [emailNotif, setEmailNotif] = useState(true);
+  const [pushNotif, setPushNotif] = useState(true);
+  const [approvalAlerts, setApprovalAlerts] = useState(true);
+  const [uploadAlerts, setUploadAlerts] = useState(false);
+
+  const [hasToggleChanges, setHasToggleChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Seed state from DB when settings load
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        phoneNumber: user.phoneNumber || "",
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!settings) return;
+    setTwoFactor(settings.security?.twoFactorEnabled ?? false);
+    setDarkMode(settings.preferences?.darkMode ?? false);
+    setLanguage(settings.preferences?.language ?? "English (US)");
+    setTimezone(settings.preferences?.timezone ?? "UTC +3 (EAT)");
+    setEmailNotif(settings.notifications?.emailNotifications ?? true);
+    setPushNotif(settings.notifications?.pushNotifications ?? true);
+    setApprovalAlerts(settings.notifications?.resourceApprovalAlerts ?? true);
+    setUploadAlerts(settings.notifications?.uploadProgressAlerts ?? false);
+  }, [settings]);
+
+  const handleToggleChange = (setter) => (val) => {
+    setter(val);
+    setHasToggleChanges(true);
+  };
+
+  const handleSave = async () => {
+    if (passwordData.newPassword) {
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+        toast.error("New passwords do not match!");
+        return;
+      }
+      if (passwordData.newPassword.length < 8) {
+        toast.error("Password must be at least 8 characters.");
+        return;
+      }
+    }
+
+    try {
+      setSaving(true);
+
+      const promises = [];
+
+      // 1. Save account changes (name/phone)
+      if (hasAccountChanges) {
+        const fd = new FormData();
+        fd.append("name", formData.name);
+        fd.append("phoneNumber", formData.phoneNumber);
+        promises.push(updateAccountInfo(fd).then(() => fetchUser()));
+      }
+
+      // 2. Save toggle/preference changes
+      if (hasToggleChanges) {
+        promises.push(
+          updateSettings({
+            security: { twoFactorEnabled: twoFactor },
+            preferences: { darkMode, language, timezone },
+            notifications: {
+              emailNotifications: emailNotif,
+              pushNotifications: pushNotif,
+              resourceApprovalAlerts: approvalAlerts,
+              uploadProgressAlerts: uploadAlerts,
+            },
+          }),
+        );
+      }
+
+      await Promise.all(promises);
+
+      toast.success("Settings saved successfully!");
+      setHasAccountChanges(false);
+      setHasToggleChanges(false);
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setShowPasswordSection(false);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to save settings.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleReset = () => {
+    if (user)
+      setFormData({
+        name: user.name || "",
+        phoneNumber: user.phoneNumber || "",
+      });
+    if (settings) {
+      setTwoFactor(settings.security?.twoFactorEnabled ?? false);
+      setDarkMode(settings.preferences?.darkMode ?? false);
+      setLanguage(settings.preferences?.language ?? "English (US)");
+      setTimezone(settings.preferences?.timezone ?? "UTC +3 (EAT)");
+      setEmailNotif(settings.notifications?.emailNotifications ?? true);
+      setPushNotif(settings.notifications?.pushNotifications ?? true);
+      setApprovalAlerts(settings.notifications?.resourceApprovalAlerts ?? true);
+      setUploadAlerts(settings.notifications?.uploadProgressAlerts ?? false);
+    }
+    setHasAccountChanges(false);
+    setHasToggleChanges(false);
+    toast.info("Reset to saved values.");
+  };
+
+  const handleLogoutAll = async () => {
+    if (!window.confirm("This will log you out from all devices. Continue?"))
+      return;
+    try {
+      await logout();
+      toast.success("Logged out from all devices.");
+    } catch {
+      toast.error("Failed to log out.");
+    }
+  };
+
+  const hasChanges = hasAccountChanges || hasToggleChanges;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <FontAwesomeIcon
+          icon={faSpinner}
+          className="text-4xl text-blue-600 animate-spin"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="px-10 py-6">
       <h1 className="text-3xl font-bold">Settings</h1>
       <p className="mb-5 text-xl font-semibold text-black/50">
-        Manage your university administration preference and security.
+        Manage your university administration preferences and security.
       </p>
 
       <section className="grid items-start grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* LEFT COLUMN */}
+        {/* ── LEFT COLUMN ──────────────────────────────────────────────── */}
         <div className="flex flex-col gap-6">
           {/* ACCOUNT SETTINGS */}
           <div className="overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
@@ -39,464 +234,471 @@ const Settings = () => {
                 icon={faUser}
                 className="p-3 text-xl text-blue-600 bg-blue-100 rounded-lg"
               />
-
-              <div className="flex flex-col">
+              <div>
                 <h2 className="text-xl font-bold">Account Settings</h2>
                 <p className="text-lg font-semibold text-black/60">
-                  Update your personal details and account credentials.
+                  Update your personal details.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-6 p-6">
-              {/* NAME & ID SECTION */}
+            <div className="flex flex-col gap-5 p-6">
               <div className="flex items-center justify-between gap-5">
-                {/* FULL NAME */}
                 <div className="flex flex-col flex-1 gap-2">
-                  <p className="font-bold text-black/50">Full Name</p>
+                  <label className="font-bold text-black/50">Full Name</label>
                   <input
-                    placeholder="Surafel Aschalew"
+                    value={formData.name}
+                    onChange={(e) => {
+                      setFormData((p) => ({ ...p, name: e.target.value }));
+                      setHasAccountChanges(true);
+                    }}
                     className="w-full px-4 py-3 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] ring-1 ring-black/10"
                   />
                 </div>
-
-                {/* UNIVERSITY ID */}
                 <div className="flex flex-col flex-1 gap-2">
-                  <p className="font-bold text-black/50">Employee ID</p>
+                  <label className="font-bold text-black/50">Employee ID</label>
                   <input
-                    placeholder="AASTU-ADMIN-001"
-                    className="w-full px-4 py-3 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] ring-1 ring-black/10"
+                    value={user?.universityId || ""}
+                    readOnly
+                    className="w-full px-4 py-3 rounded-lg bg-gray-100 ring-1 ring-black/10 cursor-not-allowed text-gray-500"
                   />
                 </div>
               </div>
 
-              {/* EMAIL ADDRESS */}
               <div className="flex flex-col gap-2">
-                <p className="font-bold text-black/50">Email Address</p>
+                <label className="font-bold text-black/50">Email Address</label>
                 <input
-                  placeholder="surafel.aschalew@aastustudent.edu.et"
+                  value={user?.email || ""}
+                  readOnly
+                  className="w-full px-4 py-3 rounded-lg bg-gray-100 ring-1 ring-black/10 cursor-not-allowed text-gray-500"
+                />
+                <p className="text-xs font-semibold text-gray-400">
+                  Email cannot be changed. Contact IT support.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-bold text-black/50">Phone Number</label>
+                <input
+                  value={formData.phoneNumber}
+                  onChange={(e) => {
+                    setFormData((p) => ({ ...p, phoneNumber: e.target.value }));
+                    setHasAccountChanges(true);
+                  }}
+                  placeholder="0912345678"
                   className="w-full px-4 py-3 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] ring-1 ring-black/10"
                 />
               </div>
 
-              {/* PHONE NUMBER */}
-              <div className="flex flex-col gap-2">
-                <p className="font-bold text-black/50">Phone Number</p>
-                <input
-                  placeholder="+251 11 123 4567"
-                  className="w-full px-4 py-3 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] ring-1 ring-black/10"
-                />
-              </div>
+              <div className="w-full h-px bg-gray-200" />
 
-              <div className="w-full h-1 my-2 bg-gray-300 rounded-full"></div>
-
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col">
-                  <h3 className="text-lg font-bold">Security Level</h3>
+              {/* Password */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold">Password & Security</h3>
                   <p className="font-semibold text-black/50">
-                    Your account has hign security clearance.
+                    Change your login password.
                   </p>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button className="flex items-center gap-2 px-3 py-2 text-sm font-semibold border border-gray-300 rounded-lg cursor-pointer">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowPasswordSection(!showPasswordSection)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                  >
                     <FontAwesomeIcon icon={faKey} />
-                    <p>Change Password</p>
+                    {showPasswordSection ? "Cancel" : "Change Password"}
                   </button>
-
-                  <button className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-blue-600 bg-blue-100 border border-blue-300 rounded-lg cursor-pointer">
+                  <button className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-blue-600 bg-blue-100 border border-blue-300 rounded-lg cursor-pointer hover:bg-blue-200">
                     <FontAwesomeIcon icon={faShield} />
-                    <p>Manage 2FA</p>
+                    Manage 2FA
                   </button>
                 </div>
               </div>
 
+              {showPasswordSection && (
+                <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                  {[
+                    {
+                      key: "currentPassword",
+                      label: "Current Password",
+                      show: "current",
+                    },
+                    { key: "newPassword", label: "New Password", show: "new" },
+                    {
+                      key: "confirmPassword",
+                      label: "Confirm Password",
+                      show: "confirm",
+                    },
+                  ].map(({ key, label, show }) => (
+                    <div key={key} className="flex flex-col gap-1">
+                      <label className="text-sm font-bold text-black/60">
+                        {label}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPw[show] ? "text" : "password"}
+                          value={passwordData[key]}
+                          onChange={(e) =>
+                            setPasswordData((p) => ({
+                              ...p,
+                              [key]: e.target.value,
+                            }))
+                          }
+                          className="w-full px-4 py-2.5 pr-10 rounded-lg bg-white ring-1 ring-black/10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                          onClick={() =>
+                            setShowPw((p) => ({ ...p, [show]: !p[show] }))
+                          }
+                          className="absolute right-3 top-3 text-gray-400 cursor-pointer"
+                        >
+                          <FontAwesomeIcon
+                            icon={showPw[show] ? faEyeSlash : faEye}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 2FA */}
               <div className="flex items-center justify-between px-6 py-4 bg-[#F6F6F8] rounded-lg border-3 border-gray-300">
                 <div>
                   <h2 className="text-xl font-bold">
                     Two-factor Authentication
                   </h2>
                   <p className="font-semibold text-black/60">
-                    Add an extra layer of security to your account.
+                    Add an extra layer of security.
                   </p>
                 </div>
-
-                <button
-                  className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                    twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                >
-                  <div
-                    className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                      twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                    }`}
-                  ></div>
-                </button>
+                <div className="flex items-center gap-2">
+                  {twoFactor && (
+                    <span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">
+                      Active
+                    </span>
+                  )}
+                  <Toggle
+                    checked={twoFactor}
+                    onChange={handleToggleChange(setTwoFactor)}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* SECURITY SETTINGS */}
+          {/* SECURITY / SESSIONS */}
           <div className="overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
             <div className="p-6 bg-[#F6F6F8] border-b-3 border-b-gray-300 flex items-center gap-4">
               <FontAwesomeIcon
                 icon={faShieldAlt}
                 className="p-3 text-xl text-blue-600 bg-blue-100 rounded-lg"
               />
-
-              <div className="flex flex-col">
+              <div>
                 <h2 className="text-xl font-bold">Security Settings</h2>
                 <p className="text-lg font-semibold text-black/60">
-                  Monitor your account activity and active sessions.
+                  Monitor your active sessions.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-6 p-6">
-              <div className="flex items-center gap-2 text-xl font-semibold">
-                <FontAwesomeIcon icon={faMobile} />
-                <p>Login Activity</p>
-              </div>
-            </div>
+            <div className="flex flex-col gap-4 p-6">
+              <p className="text-xl font-semibold flex items-center gap-2">
+                <FontAwesomeIcon icon={faMobile} /> Login Activity
+              </p>
 
-            {/* LOGIN DEVICES */}
-            <div className="flex flex-col gap-10 p-6">
-              <div className="flex items-center justify-between ml-5">
-                <div>
-                  <div className="flex items-center gap-2">
+              {[
+                {
+                  icon: faDesktop,
+                  device: "MacBook Pro 14″",
+                  loc: "Addis Ababa, ET",
+                  time: "Active now",
+                  current: true,
+                },
+                {
+                  icon: faMobile,
+                  device: "iPhone 15 Pro",
+                  loc: "Addis Ababa, ET",
+                  time: "2 hours ago",
+                  current: false,
+                },
+                {
+                  icon: faDesktop,
+                  device: "Windows Desktop",
+                  loc: "Nazret, ET",
+                  time: "Yesterday 14:22",
+                  current: false,
+                },
+              ].map(({ icon, device, loc, time, current }) => (
+                <div
+                  key={device}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
                     <FontAwesomeIcon
-                      icon={faDesktop}
-                      className="p-3 text-xl rounded-full bg-[#F6F6F8] text-black/60"
+                      icon={icon}
+                      className="p-3 text-xl rounded-full bg-white text-black/60 shadow-sm"
                     />
-                    <div className="flex flex-col">
-                      <h2 className="text-xl font-bold">MacBook Pro 14*</h2>
-                      <p className="text-lg font-semibold text-black/60">
-                        Addis Ababa, ET .Active now
+                    <div>
+                      <p className="font-bold">{device}</p>
+                      <p className="text-sm font-semibold text-black/60">
+                        {loc} · {time}
                       </p>
                     </div>
                   </div>
+                  {current ? (
+                    <span className="px-3 py-1 text-sm font-bold text-green-700 bg-green-100 border border-green-300 rounded-full">
+                      Current
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        toast.success(`Session on ${device} revoked.`)
+                      }
+                      className="px-4 py-1.5 text-sm font-bold text-red-600 border-2 border-red-200 rounded-full cursor-pointer hover:bg-red-50"
+                    >
+                      Revoke
+                    </button>
+                  )}
                 </div>
-                <button className="px-4 py-1 font-bold border-2 border-gray-300 rounded-full cursor-pointer">
-                  Current
-                </button>
-              </div>
+              ))}
 
-              <div className="flex items-center justify-between ml-5">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                      icon={faMobile}
-                      className="p-3 text-xl rounded-full bg-[#F6F6F8] text-black/60"
-                    />
-                    <div className="flex flex-col">
-                      <h2 className="text-xl font-bold">IPhone 15 Pro</h2>
-                      <p className="text-lg font-semibold text-black/60">
-                        Addis Ababa, ET .2 hour ago
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <button className="px-4 py-1 font-bold rounded-full cursor-pointer">
-                  Revoke
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between ml-5">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                      icon={faDesktop}
-                      className="p-3 text-xl rounded-full bg-[#F6F6F8] text-black/60"
-                    />
-                    <div className="flex flex-col">
-                      <h2 className="text-xl font-bold">Windows Desktop</h2>
-                      <p className="text-lg font-semibold text-black/60">
-                        Nazret, ET .Yesterday 14:22
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <button className="px-4 py-1 font-bold rounded-full cursor-pointer">
-                  Revoke
-                </button>
-              </div>
-
-              <div className="w-full h-1 my-2 bg-gray-300 rounded-full"></div>
-
-              <button className="flex items-center justify-center gap-3 px-4 py-2 text-lg font-semibold text-red-600 border-red-300 rounded-lg cursor-pointer border-3">
+              <div className="w-full h-px bg-gray-200 mt-2" />
+              <button
+                onClick={handleLogoutAll}
+                className="flex items-center justify-center gap-3 px-4 py-2.5 text-lg font-semibold text-red-600 border-2 border-red-300 rounded-lg cursor-pointer hover:bg-red-50"
+              >
                 <FontAwesomeIcon icon={faCircleXmark} />
-                <span>Log out from all other devices</span>
+                Log out from all other devices
               </button>
-
-              <p className="text-lg font-bold text-center uppercase text-black/50">
-                Last security audit: October 12, 2026
+              <p className="text-sm font-bold text-center uppercase text-black/40">
+                Last security audit: October 12, 2025
               </p>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
+        {/* ── RIGHT COLUMN ─────────────────────────────────────────────── */}
         <div className="flex flex-col gap-6">
           {/* SYSTEM PREFERENCES */}
-          <div className="self-start overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
+          <div className="overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
             <div className="p-6 bg-[#F6F6F8] border-b-3 border-b-gray-300 flex items-center gap-4">
               <FontAwesomeIcon
                 icon={faSliders}
                 className="p-3 text-xl text-blue-600 bg-blue-100 rounded-lg"
               />
-
-              <div className="flex flex-col">
+              <div>
                 <h2 className="text-xl font-bold">System Preferences</h2>
                 <p className="text-lg font-semibold text-black/60">
-                  Customize the look and feel of your dashboard.
+                  Customize your dashboard.
                 </p>
               </div>
             </div>
-
             <div className="flex flex-col gap-6 p-6">
-              {/* DARK MODE */}
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
+                <div>
                   <h2 className="text-xl font-bold">Dark Mode</h2>
-                  <p className="text-lg font-semibold text-black/60">
-                    Switch between light and dark theme styles.
+                  <p className="font-semibold text-black/60">
+                    Switch between light and dark theme.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faMoon} className="text-xl" />
-                  <button
-                    className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                      twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                    }`}
-                    onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                  >
-                    <div
-                      className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                        twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                      }`}
-                    ></div>
-                  </button>
+                <div className="flex items-center gap-3">
+                  <FontAwesomeIcon
+                    icon={darkMode ? faMoon : faSun}
+                    className={darkMode ? "text-indigo-600" : "text-yellow-500"}
+                  />
+                  <Toggle
+                    checked={darkMode}
+                    onChange={handleToggleChange(setDarkMode)}
+                  />
                 </div>
               </div>
 
-              {/* LANGUAGE */}
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
+                <div>
                   <h2 className="text-xl font-bold">Language</h2>
-                  <p className="text-lg font-semibold text-black/60">
+                  <p className="font-semibold text-black/60">
                     Select your preferred language.
                   </p>
                 </div>
-
-                <button className="px-4 py-2 border-3 border-gray-300 rounded-lg cursor-pointer bg-[#F6F6F8] flex items-center gap-2">
-                  <FontAwesomeIcon icon={faGlobe} />
-                  <p>English (US)</p>
-                </button>
+                <select
+                  value={language}
+                  onChange={(e) => {
+                    setLanguage(e.target.value);
+                    setHasToggleChanges(true);
+                  }}
+                  className="px-4 py-2 border-2 border-gray-300 rounded-lg bg-[#F6F6F8] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {["English (US)", "Amharic", "Afaan Oromoo", "Tigrinya"].map(
+                    (l) => (
+                      <option key={l}>{l}</option>
+                    ),
+                  )}
+                </select>
               </div>
 
-              {/* TIMEZONE */}
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
+                <div>
                   <h2 className="text-xl font-bold">Timezone</h2>
-                  <p className="text-lg font-semibold text-black/60">
-                    Controls how dates and times are displayed.
+                  <p className="font-semibold text-black/60">
+                    Controls how dates/times are displayed.
                   </p>
                 </div>
-
-                <button className="px-4 py-2 border-3 border-gray-300 rounded-lg cursor-pointer bg-[#F6F6F8] flex items-center gap-2">
-                  <FontAwesomeIcon icon={faClock} />
-                  <p>UTC +3 (EAT)</p>
-                </button>
+                <select
+                  value={timezone}
+                  onChange={(e) => {
+                    setTimezone(e.target.value);
+                    setHasToggleChanges(true);
+                  }}
+                  className="px-4 py-2 border-2 border-gray-300 rounded-lg bg-[#F6F6F8] font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {[
+                    "UTC +3 (EAT)",
+                    "UTC +0 (GMT)",
+                    "UTC +1 (CET)",
+                    "UTC +2 (CAT)",
+                  ].map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
 
           {/* NOTIFICATION SETTINGS */}
-          <div className="self-start overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
+          <div className="overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
             <div className="p-6 bg-[#F6F6F8] border-b-3 border-b-gray-300 flex items-center gap-4">
               <FontAwesomeIcon
                 icon={faBell}
                 className="p-3 text-xl text-blue-600 bg-blue-100 rounded-lg"
               />
-
-              <div className="flex flex-col">
+              <div>
                 <h2 className="text-xl font-bold">Notification Settings</h2>
                 <p className="text-lg font-semibold text-black/60">
-                  Manage how and when you recieve alerts.
+                  Manage how you receive alerts.
                 </p>
               </div>
             </div>
-
-            {/* LOGIN DEVICES */}
-            <div className="flex flex-col gap-10 p-6">
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-xl font-bold">Email Notifications</p>
-
-                <button
-                  className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                    twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                >
-                  <div
-                    className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                      twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                    }`}
-                  ></div>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p className="text-xl font-bold">Push Notifications</p>
-
-                <button
-                  className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                    twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                >
-                  <div
-                    className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                      twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                    }`}
-                  ></div>
-                </button>
-              </div>
-
-              <div className="w-full h-1 my-2 bg-gray-300 rounded-full"></div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">Resource Approval Alerts</p>
-                  <p className="text-lg font-semibold text-black/50">
-                    Notify when a resource needs approval.
-                  </p>
+            <div className="flex flex-col gap-5 p-6">
+              {[
+                {
+                  label: "Email Notifications",
+                  desc: "Receive alerts via university email.",
+                  val: emailNotif,
+                  set: setEmailNotif,
+                },
+                {
+                  label: "Push Notifications",
+                  desc: "In-browser push notifications.",
+                  val: pushNotif,
+                  set: setPushNotif,
+                },
+              ].map(({ label, desc, val, set }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <div>
+                    <p className="text-lg font-bold">{label}</p>
+                    <p className="text-sm font-semibold text-black/50">
+                      {desc}
+                    </p>
+                  </div>
+                  <Toggle checked={val} onChange={handleToggleChange(set)} />
                 </div>
+              ))}
 
-                <button
-                  className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                    twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                >
-                  <div
-                    className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                      twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                    }`}
-                  ></div>
-                </button>
-              </div>
+              <div className="w-full h-px bg-gray-200" />
 
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">Upload Progress Alerts</p>
-                  <p className="text-lg font-semibold text-black/50">
-                    Notify when bulk uploads are complete.
-                  </p>
+              {[
+                {
+                  label: "Resource Approval Alerts",
+                  desc: "Notify when a resource needs approval.",
+                  val: approvalAlerts,
+                  set: setApprovalAlerts,
+                },
+                {
+                  label: "Upload Progress Alerts",
+                  desc: "Notify when bulk uploads are complete.",
+                  val: uploadAlerts,
+                  set: setUploadAlerts,
+                },
+              ].map(({ label, desc, val, set }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <div>
+                    <p className="text-lg font-bold">{label}</p>
+                    <p className="text-sm font-semibold text-black/50">
+                      {desc}
+                    </p>
+                  </div>
+                  <Toggle checked={val} onChange={handleToggleChange(set)} />
                 </div>
-
-                <button
-                  className={`relative w-14 h-7 rounded-full transition cursor-pointer ${
-                    twoFactorEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                >
-                  <div
-                    className={`absolute top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ${
-                      twoFactorEnabled ? "translate-x-8" : "translate-x-1"
-                    }`}
-                  ></div>
-                </button>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* ROLE & PERMISSIONS */}
-          <div className="self-start overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
+          <div className="overflow-hidden bg-white border-gray-300 border-3 rounded-xl">
             <div className="p-6 bg-[#F6F6F8] border-b-3 border-b-gray-300 flex items-center gap-4">
               <FontAwesomeIcon
                 icon={faLock}
                 className="p-3 text-xl text-blue-600 bg-blue-100 rounded-lg"
               />
-
-              <div className="flex flex-col">
+              <div>
                 <h2 className="text-xl font-bold">Role & Permissions</h2>
                 <p className="text-lg font-semibold text-black/60">
-                  Your current access levels and system privilages.
+                  Your current access levels.
                 </p>
               </div>
             </div>
-
-            <div className="p-6 ">
+            <div className="p-6">
               <div className="flex items-center justify-between p-5 text-blue-600 bg-blue-100 border-blue-300 border-3 rounded-2xl">
                 <div>
-                  <h2 className="text-xl font-bold uppercase">Current Role</h2>
-                  <p className="text-lg font-semibold text-black">
+                  <h2 className="text-lg font-bold uppercase">Current Role</h2>
+                  <p className="text-base font-semibold text-black">
                     System Administrator
                   </p>
                 </div>
-                <button className="px-3 py-1 font-bold text-white bg-blue-600 rounded-full">
+                <span className="px-3 py-1 font-bold text-white bg-blue-600 rounded-full text-sm">
                   Full Access
-                </button>
+                </span>
               </div>
             </div>
-
-            {/* <div className="p-6">
-            <div className="bg-[#F6F6F8] p-6 border-gray-300 rounded-xl border-3">
-              <div className="flex items-center justify-between text-xl font-bold text-black/70">
+            <div className="mx-6 mb-6 overflow-hidden border-gray-300 border-3 rounded-xl">
+              <div className="bg-[#F6F6F8] px-6 py-4 flex items-center justify-between font-bold text-black/60 border-b-2 border-gray-200">
                 <p>Permission</p>
                 <p>Status</p>
               </div>
+              {[
+                { name: "User Management", status: "full" },
+                { name: "Financial Records", status: "view" },
+                { name: "System Logs", status: "full" },
+                { name: "Resource Deletion", status: "none" },
+              ].map(({ name, status }, i, arr) => (
+                <div key={name}>
+                  <div className="flex items-center justify-between px-6 py-3 font-bold">
+                    <p>{name}</p>
+                    {status === "full" && (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        className="text-green-600"
+                      />
+                    )}
+                    {status === "view" && (
+                      <span className="px-2 py-0.5 text-sm font-bold border-2 border-gray-300 rounded-full">
+                        View
+                      </span>
+                    )}
+                    {status === "none" && (
+                      <span className="px-2 py-0.5 text-sm font-bold text-white bg-red-500 rounded-full">
+                        None
+                      </span>
+                    )}
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div className="h-px bg-gray-200 mx-4" />
+                  )}
+                </div>
+              ))}
             </div>
-          </div> */}
-
-            <div className="m-6 overflow-hidden border-gray-300 border-3 rounded-xl">
-              <div className="bg-[#F6F6F8]">
-                <div className="flex items-center justify-between p-6 text-xl font-bold text-black/70">
-                  <p>Permission</p>
-                  <p>Status</p>
-                </div>
-                <div className="w-full h-1 mt-2 bg-gray-300 rounded-full"></div>
-              </div>
-
-              <div className="">
-                <div className="flex items-center justify-between px-6 py-3 text-xl font-bold">
-                  <p>User Management</p>
-                  <FontAwesomeIcon icon={faCheckCircle} />
-                </div>
-                <div className="w-full h-1 mt-2 bg-gray-300 rounded-full"></div>
-              </div>
-
-              <div className="">
-                <div className="flex items-center justify-between px-6 py-3 text-xl font-bold">
-                  <p>Financial Records</p>
-                  <button className="px-2 py-1 text-sm font-bold border-2 border-gray-300 rounded-full cursor-pointer">
-                    View
-                  </button>
-                </div>
-                <div className="w-full h-1 mt-2 bg-gray-300 rounded-full"></div>
-              </div>
-
-              <div className="">
-                <div className="flex items-center justify-between px-6 py-3 text-xl font-bold">
-                  <p>System Logs</p>
-                  <FontAwesomeIcon icon={faCheckCircle} />
-                </div>
-                <div className="w-full h-1 mt-2 bg-gray-300 rounded-full"></div>
-              </div>
-
-              <div className="">
-                <div className="flex items-center justify-between px-6 py-3 text-xl font-bold">
-                  <p>Resource Deletion</p>
-                  <button className="px-2 py-1 text-sm font-bold text-white bg-red-600 rounded-full">
-                    None
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-5 mb-10 text-lg font-semibold text-blue-600 cursor-pointer">
+            <div className="flex items-center justify-center gap-2 mb-6 text-base font-semibold text-blue-600 cursor-pointer hover:underline">
               <p>View Detailed Permission Matrix</p>
               <FontAwesomeIcon icon={faChevronRight} />
             </div>
@@ -504,27 +706,40 @@ const Settings = () => {
         </div>
       </section>
 
-      <div className="w-full h-1 bg-gray-300 rounded-full my-15"></div>
+      <div className="w-full h-px bg-gray-300 rounded-full my-10" />
 
+      {/* FOOTER */}
       <div className="flex items-center justify-between text-lg font-semibold">
-        <div className="flex items-center gap-2">
-          <FontAwesomeIcon icon={faCheckCircle} />
-          <p>All changes are automatically drafted</p>
+        <div className="flex items-center gap-2 text-gray-500">
+          <FontAwesomeIcon
+            icon={hasChanges ? faTimes : faCheck}
+            className={hasChanges ? "text-orange-500" : "text-green-500"}
+          />
+          <p>{hasChanges ? "You have unsaved changes" : "All changes saved"}</p>
         </div>
-
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 mr-5 text-lg font-semibold cursor-pointer">
-            <FontAwesomeIcon icon={faRefresh} />
-            <p>Reset Defaults</p>
-          </div>
-
-          <button className="px-4 py-2 text-lg font-semibold border border-gray-300 rounded-md cursor-pointer">
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-2 mr-2 text-base font-semibold cursor-pointer hover:text-blue-600"
+          >
+            <FontAwesomeIcon icon={faRefresh} /> Reset
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 text-base font-semibold border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+          >
             Cancel
           </button>
-
-          <button className="flex items-center gap-2 px-4 py-2 text-lg font-semibold text-white bg-blue-600 border border-gray-300 rounded-md cursor-pointer">
-            <FontAwesomeIcon icon={faSave} />
-            <span>Save Changes</span>
+          <button
+            onClick={handleSave}
+            disabled={saving || !hasChanges}
+            className="flex items-center gap-2 px-5 py-2 text-base font-semibold text-white bg-blue-600 rounded-md cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <FontAwesomeIcon
+              icon={saving ? faSpinner : faSave}
+              className={saving ? "animate-spin" : ""}
+            />
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
