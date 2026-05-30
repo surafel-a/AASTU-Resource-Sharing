@@ -63,28 +63,6 @@ const ResourceLibraries = ({
 
   const fileColors = getFileTypeColor();
 
-  // const handleResourceOpen = () => {
-  //   if (!fileUrl) return;
-
-  //   // Open PDFs, videos, images in browser
-  //   if (
-  //     fileType.toLowerCase() === "pdf" ||
-  //     fileType.toLowerCase() === "video"
-  //   ) {
-  //     // window.open(fileUrl, "_blank");
-  //     navigate(`/reader/${resourceId}`);
-  //     return;
-  //   }
-
-  //   // Force download for docs/ppts
-  //   const link = document.createElement("a");
-  //   link.href = fileUrl;
-  //   link.setAttribute("download", fileName);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
-
   return (
     <div className="relative bg-white border shadow-md rounded-2xl border-black/10">
       <div className="mx-8 my-6">

@@ -40,6 +40,10 @@ const Bookmarks = () => {
           return type.includes(selectedType);
         });
 
+  const handleResourceOpen = (resourceId) => {
+    navigate(`/reader/${resourceId}`);
+  };
+
   return (
     <div className="bg-[#F6F6F8] min-h-screen py-6 md:py-10">
       <div className="mx-4 sm:mx-6 lg:mx-12 xl:mx-20 2xl:mx-32">
@@ -148,7 +152,10 @@ const Bookmarks = () => {
                       <div />
                     )}
 
-                    <button className="text-2xl text-[#1152D4] hover:scale-110 transition-transform cursor-pointer">
+                    <button
+                      onClick={() => handleResourceOpen(bookmark.resource?._id)}
+                      className="text-2xl text-[#1152D4] hover:scale-110 transition-transform cursor-pointer"
+                    >
                       <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                     </button>
                   </div>

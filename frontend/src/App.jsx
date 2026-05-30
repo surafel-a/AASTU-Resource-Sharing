@@ -29,6 +29,7 @@ import AddCourse from "./pages/AddCourse";
 import UpdateResource from "./pages/UpdateResource";
 import ResourceLayout from "./layouts/ResourceLayout";
 import Reader from "./pages/Reader";
+import PageNoteFound from "./pages/PageNotFound";
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<PageNoteFound />} />
 
         {/* User Routes */}
         <Route element={<MainLayout />}>
