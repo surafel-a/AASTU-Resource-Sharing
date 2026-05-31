@@ -314,7 +314,7 @@ const Profile = () => {
 
                     {/* TOGGLE */}
                     <button
-                      className={`relative w-14 h-7 rounded-full transition ${
+                      className={`relative w-14 h-7 cursor-pointer rounded-full transition ${
                         item.state ? "bg-green-600" : "bg-gray-300"
                       }`}
                       onClick={() => item.setter(!item.state)}

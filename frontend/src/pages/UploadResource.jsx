@@ -43,7 +43,7 @@ const UploadResource = () => {
   const handleSubmit = async () => {
     try {
       if (!file) {
-        console.log("No file selected");
+        toast.error("No file selected");
         return;
       }
 
