@@ -14,14 +14,18 @@ import UserRow from "../components/admin/UserRow";
 import { useUser } from "../contexts/UserContext";
 import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
+import UserEditModal from "../components/admin/UserEditModal";
 
 const UserManagement = () => {
-  const { users, loading: usersLoading } = useUser();
+  const { users, updateUserByAdmin, loading: usersLoading } = useUser();
   const USERS_PER_PAGE = 5;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -74,6 +78,10 @@ const UserManagement = () => {
   const activeUsersCount = users.filter(
     (user) => (user.status || "").toLowerCase() === "active",
   ).length;
+
+  const handleSaveUser = async (userId, updates) => {
+    await updateUserByAdmin(userId, updates);
+  };
 
   if (usersLoading) {
     return <LoadingSpinner />;
@@ -217,6 +225,11 @@ const UserManagement = () => {
             role={user.role}
             status={user.status}
             photo={user.photo}
+            updateUserByAdmin={updateUserByAdmin}
+            onEditClick={(user) => {
+              setSelectedUser(user);
+              setIsModalOpen(true);
+            }}
           />
         ))}
 
@@ -273,6 +286,13 @@ const UserManagement = () => {
           </div>
         </div>
       </section>
+
+      <UserEditModal
+        user={selectedUser}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveUser}
+      />
     </div>
   );
 };

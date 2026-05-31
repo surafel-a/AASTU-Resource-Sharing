@@ -64,6 +64,23 @@ export function UserProvider({ children }) {
     }
   };
 
+  const updateUserByAdmin = async (userId, updates) => {
+    try {
+      const {
+        data: { data },
+      } = await axios.patch(`${BASE_URL}/api/v1/users/${userId}`, updates);
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === userId ? data.user : user)),
+      );
+
+      return data.user;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   const getAllUsers = async () => {
     try {
       setLoading(true);
@@ -87,7 +104,15 @@ export function UserProvider({ children }) {
     getAllUsers();
   }, []);
 
-  const value = { user, users, loading, fetchUser, updateUser, getAllUsers };
+  const value = {
+    user,
+    users,
+    loading,
+    fetchUser,
+    updateUser,
+    updateUserByAdmin,
+    getAllUsers,
+  };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
