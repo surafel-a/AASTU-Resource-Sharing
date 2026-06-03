@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -12,6 +12,8 @@ import {
   faFilePdf,
   faFilePowerpoint,
   faVideo,
+  faSearch,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
@@ -27,7 +29,12 @@ const Library = () => {
   const ITEMS_PER_PAGE = 9;
 
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Read search from URL on mount / URL change
+  const urlSearch = searchParams.get("search") || "";
+  const [searchInput, setSearchInput] = useState(urlSearch);
 
   const [filters, setFilters] = useState({
     department: "",
@@ -38,6 +45,12 @@ const Library = () => {
 
   const { createBookmark, deleteBookmark, myBookmarks } = useBookmark();
   const { resources } = useResource();
+
+  // Sync input when URL search changes (e.g. user comes from navbar)
+  useEffect(() => {
+    setSearchInput(urlSearch);
+    setCurrentPage(1);
+  }, [urlSearch]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -52,7 +65,6 @@ const Library = () => {
   const handleBookmarkToggle = async (resourceId) => {
     try {
       const exists = isBookmarked(resourceId);
-
       if (exists) {
         await deleteBookmark(resourceId);
       } else {
@@ -68,6 +80,21 @@ const Library = () => {
       ...prev,
       [key]: value,
     }));
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = searchInput.trim();
+    if (trimmed) {
+      setSearchParams({ search: trimmed });
+    } else {
+      setSearchParams({});
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setSearchParams({});
   };
 
   const filteredResources = useMemo(() => {
@@ -87,9 +114,19 @@ const Library = () => {
         !filters.fileType ||
         resource.type.toLowerCase() === filters.fileType.toLowerCase();
 
-      return departmentMatch && courseMatch && yearMatch && typeMatch;
+      const searchTerm = urlSearch.toLowerCase();
+      const searchMatch =
+        !searchTerm ||
+        resource.title?.toLowerCase().includes(searchTerm) ||
+        resource.course?.code?.toLowerCase().includes(searchTerm) ||
+        resource.course?.courseInstructor?.toLowerCase().includes(searchTerm) ||
+        resource.department?.toLowerCase().includes(searchTerm);
+
+      return (
+        departmentMatch && courseMatch && yearMatch && typeMatch && searchMatch
+      );
     });
-  }, [resources, filters]);
+  }, [resources, filters, urlSearch]);
 
   const totalPages = Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
 
@@ -109,7 +146,6 @@ const Library = () => {
 
   const getPageNumbers = () => {
     const maxVisible = 9;
-
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = start + maxVisible - 1;
 
@@ -122,7 +158,6 @@ const Library = () => {
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
     return pages;
   };
 
@@ -157,6 +192,37 @@ const Library = () => {
             AASTU
           </p>
         </div>
+
+        {/* SEARCH BAR */}
+        <form onSubmit={handleSearchSubmit} className="relative mb-6 max-w-xl">
+          <FontAwesomeIcon
+            className="absolute top-3.5 left-3 text-gray-500"
+            icon={faSearch}
+          />
+          <input
+            className="w-full px-4 py-2 pl-10 pr-10 border border-gray-300 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            type="text"
+            placeholder="Search by title, course code or instructor..."
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+        </form>
+
+        {urlSearch && (
+          <p className="mb-4 text-sm font-semibold text-blue-600">
+            Showing results for: &ldquo;{urlSearch}&rdquo; (
+            {filteredResources.length} found)
+          </p>
+        )}
 
         <div className="flex flex-wrap items-center gap-4 mb-10">
           <select
@@ -206,14 +272,15 @@ const Library = () => {
           </select>
 
           <button
-            onClick={() =>
+            onClick={() => {
               setFilters({
                 department: "",
                 courseCode: "",
                 year: "",
                 fileType: "",
-              })
-            }
+              });
+              handleClearSearch();
+            }}
             className="text-blue-600 font-bold hover:underline cursor-pointer"
           >
             Clear Filters
@@ -228,26 +295,32 @@ const Library = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 lg:gap-8 mb-12">
-          {paginatedResources.map((resource) => (
-            <ResourceLibraries
-              key={resource._id}
-              resourceId={resource._id}
-              fileName={resource.title}
-              fileType={resource.type}
-              fileUrl={resource.fileUrl}
-              lecturer={resource.course.courseInstructor}
-              courseId={resource.course.code}
-              downloads={resource.downloads}
-              year={resource.course.year}
-              fileIcon={getFileIcon(resource.type)}
-              downloadIcon={faDownload}
-              calanderIcon={faCalendar}
-              bookmarkIconR={faBookmarkRegular}
-              bookmarkIconS={faBookmarkSolid}
-              isBookmarked={isBookmarked(resource._id)}
-              onBookmarkToggle={() => handleBookmarkToggle(resource._id)}
-            />
-          ))}
+          {paginatedResources.length === 0 ? (
+            <div className="col-span-full text-center py-16 text-gray-500 font-semibold text-lg">
+              No resources found{urlSearch ? ` for "${urlSearch}"` : ""}.
+            </div>
+          ) : (
+            paginatedResources.map((resource) => (
+              <ResourceLibraries
+                key={resource._id}
+                resourceId={resource._id}
+                fileName={resource.title}
+                fileType={resource.type}
+                fileUrl={resource.fileUrl}
+                lecturer={resource.course.courseInstructor}
+                courseId={resource.course.code}
+                downloads={resource.downloads}
+                year={resource.course.year}
+                fileIcon={getFileIcon(resource.type)}
+                downloadIcon={faDownload}
+                calanderIcon={faCalendar}
+                bookmarkIconR={faBookmarkRegular}
+                bookmarkIconS={faBookmarkSolid}
+                isBookmarked={isBookmarked(resource._id)}
+                onBookmarkToggle={() => handleBookmarkToggle(resource._id)}
+              />
+            ))
+          )}
         </div>
 
         {totalPages > 1 && (

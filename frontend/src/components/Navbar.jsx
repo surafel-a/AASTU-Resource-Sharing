@@ -45,14 +45,25 @@ const Navbar = () => {
     return pathname === item.path || pathname.startsWith(item.path + "/");
   })?.name;
 
+  // SEARCH HANDLER
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/library?search=${encodeURIComponent(trimmed)}`);
+    setMobileMenu(false);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch(e);
+  };
+
   // LOGOUT
   const handleLogout = () => {
     setOpen(false);
     setMobileMenu(false);
     clearProgress();
-
     logout();
-
     navigate("/login");
     toast.success("Logged out successfully!");
   };
@@ -85,14 +96,16 @@ const Navbar = () => {
         {/* SEARCH */}
         <div className="hidden md:flex relative flex-1 max-w-xl">
           <FontAwesomeIcon
-            className="absolute top-3.5 left-3 text-gray-500"
+            className="absolute top-3.5 left-3 text-gray-500 cursor-pointer"
             icon={faSearch}
+            onClick={handleSearch}
           />
 
           <input
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
             type="text"
             placeholder="Search by course code, title or instructor..."
           />
@@ -162,14 +175,16 @@ const Navbar = () => {
       {/* MOBILE SEARCH */}
       <div className="md:hidden mt-4 relative">
         <FontAwesomeIcon
-          className="absolute top-3.5 left-3 text-gray-500"
+          className="absolute top-3.5 left-3 text-gray-500 cursor-pointer"
           icon={faSearch}
+          onClick={handleSearch}
         />
 
         <input
           className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
           type="text"
           placeholder="Search..."
         />

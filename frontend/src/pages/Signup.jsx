@@ -36,14 +36,7 @@ export default function Signup() {
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
       <div className="w-full max-w-4xl p-10 bg-white shadow-2xl rounded-2xl">
-        <button
-          onClick={() => navigate("/")}
-          className="mb-6 font-bold text-blue-600 cursor-pointer hover:underline"
-        >
-          &larr; Back to Home
-        </button>
-
-        <h1 className="mb-4 text-4xl font-extrabold text-center text-gray-800">
+        <h1 className="mb-4 mt-6 text-4xl font-extrabold text-center text-gray-800">
           Create Account
         </h1>
         <p className="mb-6 text-lg text-center text-gray-500">

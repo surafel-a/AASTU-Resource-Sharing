@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,16 +29,8 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center h-screen px-4 bg-gray-100">
       <div className="w-full max-w-lg p-10 bg-white shadow-2xl rounded-2xl">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate("/")}
-          className="mb-6 font-bold text-blue-600 cursor-pointer hover:underline"
-        >
-          &larr; Back to Home
-        </button>
-
         {/* Title */}
-        <h1 className="mb-6 text-4xl font-extrabold text-center text-gray-800">
+        <h1 className="my-6 text-4xl font-extrabold text-center text-gray-800">
           Welcome Back
         </h1>
         <p className="mb-6 text-lg text-center text-gray-500">
@@ -73,6 +65,15 @@ export default function Login() {
             />
           </div>
 
+          <div className="text-right -mt-2">
+            <span
+              onClick={() => navigate("/forgot-password")}
+              className="text-blue-600 font-semibold cursor-pointer hover:underline text-sm"
+            >
+              Forgot password?
+            </span>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -101,4 +102,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

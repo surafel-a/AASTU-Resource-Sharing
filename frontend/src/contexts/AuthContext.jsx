@@ -59,6 +59,56 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // FORGOT PASSWORD
+  const forgotPassword = async (email) => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/forgot-password`, {
+        email,
+      });
+      return data;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+  // RESET PASSWORD
+  const resetPassword = async (token, password, passwordConfirm) => {
+    try {
+      const { data } = await axios.patch(
+        `${BASE_URL}/reset-password/${token}`,
+        {
+          password,
+          passwordConfirm,
+        },
+      );
+      setUser(data.data.user);
+      return data;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+  // CHANGE PASSWORD
+  const changePassword = async (
+    currentPassword,
+    newPassword,
+    newPasswordConfirm,
+  ) => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/change-password`, {
+        currentPassword,
+        newPassword,
+        newPasswordConfirm,
+      });
+      return data;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   // CHECK AUTH ON REFRESH (VERY IMPORTANT)
   useEffect(() => {
     const checkAuth = async () => {
@@ -83,6 +133,9 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
+    forgotPassword,
+    resetPassword,
+    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

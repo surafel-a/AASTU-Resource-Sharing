@@ -5,9 +5,8 @@ import {
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { getInitials } from "../../utilities/names";
 
 const Header = () => {
@@ -16,17 +15,36 @@ const Header = () => {
   const location = useLocation();
   const isActive = (path) => location.pathname.includes(path);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(
+      `/admin/resource-management?search=${encodeURIComponent(trimmed)}`,
+    );
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch(e);
+  };
+
   return (
     <div className="flex items-center justify-between gap-10 px-6 py-2 border-b-3 border-black/15">
       <div className="relative flex-1">
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Search resources, users or reports..."
           className="w-[70%] pl-10 pr-6 py-2 rounded-lg bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40"
         />
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
-          className="absolute top-3 left-2 text-black/50"
+          className="absolute top-3 left-2 text-black/50 cursor-pointer"
+          onClick={handleSearch}
         />
       </div>
 

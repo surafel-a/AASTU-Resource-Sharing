@@ -13,6 +13,8 @@ import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import UploadResource from "./pages/UploadResource";
 import EditCourse from "./pages/EditCourse";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // ADMIN SIDE
 import Settings from "./admin/Settings";
@@ -37,6 +39,8 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageNoteFound />} />
 
         {/* User Routes */}
