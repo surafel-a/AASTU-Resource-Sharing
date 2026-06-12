@@ -13,15 +13,15 @@ import { useState } from "react";
 
 import Logo from "./Logo";
 
-import { useUser } from "../contexts/UserContext";
+// import { useUser } from "../contexts/UserContext";
 import { formatDepartment, getInitials } from "../utilities/names";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 import { useProgress } from "../contexts/ProgressContext";
 
 const Navbar = () => {
-  const { user } = useUser();
-  const { logout } = useAuth();
+  // const { user } = useUser();
+  const { logout, user } = useAuth();
   const { clearProgress } = useProgress();
 
   const { pathname } = useLocation();

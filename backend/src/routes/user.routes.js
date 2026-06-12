@@ -23,7 +23,6 @@ router
   .patch(upload.single("photo"), updateMe)
   .delete(deleteMe);
 
-// NEW: admin profile stats
 router.get("/admin-stats", restrictTo("admin"), getAdminStats);
 
 router.route("/").get(restrictTo("admin"), getAllUsers);

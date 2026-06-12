@@ -46,6 +46,10 @@ const Library = () => {
   const { createBookmark, deleteBookmark, myBookmarks } = useBookmark();
   const { resources } = useResource();
 
+  const approvedResources = resources.filter(
+    (resource) => resource.status === "approved",
+  );
+
   // Sync input when URL search changes (e.g. user comes from navbar)
   useEffect(() => {
     setSearchInput(urlSearch);
@@ -98,7 +102,7 @@ const Library = () => {
   };
 
   const filteredResources = useMemo(() => {
-    return resources.filter((resource) => {
+    return approvedResources.filter((resource) => {
       const departmentMatch =
         !filters.department ||
         resource.department.split(" ")[0].toLowerCase() ===
@@ -126,7 +130,7 @@ const Library = () => {
         departmentMatch && courseMatch && yearMatch && typeMatch && searchMatch
       );
     });
-  }, [resources, filters, urlSearch]);
+  }, [approvedResources, filters, urlSearch]);
 
   const totalPages = Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
 

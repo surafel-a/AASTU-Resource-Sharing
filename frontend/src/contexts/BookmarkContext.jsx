@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-
+import { useAuth } from "./AuthContext";
 const BookmarkContext = createContext();
 
 export const BookmarkProvider = ({ children }) => {
@@ -10,6 +10,14 @@ export const BookmarkProvider = ({ children }) => {
   // STATES
   const [myBookmarks, setMyBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      setMyBookmarks([]);
+    }
+  }, [user]);
 
   // Functions
   const createBookmark = async (resourceId) => {
@@ -64,14 +72,23 @@ export const BookmarkProvider = ({ children }) => {
   const getMyBookmarks = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${BASE_URL}/api/v1/bookmarks`);
+
+      const { data } = await axios.get(`${BASE_URL}/api/v1/bookmarks`, {
+        withCredentials: true,
+      });
+
       setMyBookmarks(data.data.bookmarks);
     } catch (error) {
       console.error(error.response?.data || error.message);
+      setMyBookmarks([]);
       throw error;
     } finally {
       setLoading(false);
     }
+  };
+
+  const clearBookmarks = () => {
+    setMyBookmarks([]);
   };
 
   useEffect(() => {
@@ -83,6 +100,7 @@ export const BookmarkProvider = ({ children }) => {
     deleteBookmark,
     loading,
     myBookmarks,
+    clearBookmarks,
   };
 
   return (

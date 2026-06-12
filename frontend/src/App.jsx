@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 // USER SIDE
 import Courses from "./pages/Courses";
@@ -9,12 +9,20 @@ import MyUploads from "./pages/MyUploads";
 import Bookmarks from "./pages/Bookmarks";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
-import MainLayout from "./layouts/MainLayout";
-import AdminLayout from "./layouts/AdminLayout";
 import UploadResource from "./pages/UploadResource";
 import EditCourse from "./pages/EditCourse";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import AddCourse from "./pages/AddCourse";
+import UpdateResource from "./pages/UpdateResource";
+import Reader from "./pages/Reader";
+import PageNoteFound from "./pages/PageNotFound";
+
+// LAYOUTS
+import MainLayout from "./layouts/MainLayout";
+import CourseLayout from "./layouts/CourseLayout";
+import ResourceLayout from "./layouts/ResourceLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 // ADMIN SIDE
 import Settings from "./admin/Settings";
@@ -26,45 +34,75 @@ import ReportManagement from "./admin/ReportManagement";
 import Notification from "./admin/Notification";
 import AdminProfile from "./admin/AdminProfile";
 
-import CourseLayout from "./layouts/CourseLayout";
-import AddCourse from "./pages/AddCourse";
-import UpdateResource from "./pages/UpdateResource";
-import ResourceLayout from "./layouts/ResourceLayout";
-import Reader from "./pages/Reader";
-import PageNoteFound from "./pages/PageNotFound";
+// ROUTE GUARDS
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import AdminRoute from "./components/AdminRoute";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* ================= PUBLIC ROUTES ================= */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
+
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="*" element={<PageNoteFound />} />
 
-        {/* User Routes */}
-        <Route element={<MainLayout />}>
+        {/* ================= PROTECTED USER ROUTES ================= */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/" element={<Home />} />
-
           <Route path="/library" element={<Library />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/reader/:id" element={<Reader />} />
+
+          {/* COURSES */}
           <Route path="/courses" element={<CourseLayout />}>
             <Route index element={<Courses />} />
             <Route path="add" element={<AddCourse />} />
             <Route path=":courseId/edit" element={<EditCourse />} />
           </Route>
+
+          {/* UPLOADS */}
           <Route path="/uploads" element={<ResourceLayout />}>
             <Route index element={<MyUploads />} />
             <Route path="add" element={<UploadResource />} />
             <Route path=":resourceId/edit" element={<UpdateResource />} />
           </Route>
-          <Route path="/bookmarks" element={<Bookmarks />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/reader/:id" element={<Reader />} />
         </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* ================= ADMIN ROUTES ================= */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="approvals" element={<Approvals />} />
           <Route path="user-management" element={<UserManagement />} />
@@ -74,6 +112,9 @@ const App = () => {
           <Route path="notifications" element={<Notification />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
+
+        {/* ================= FALLBACK ================= */}
+        <Route path="*" element={<PageNoteFound />} />
       </Routes>
     </BrowserRouter>
   );

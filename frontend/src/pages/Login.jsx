@@ -17,7 +17,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-      toast.success("Login successful");
+      toast.success("Logged in successfully");
 
       navigate("/");
     } catch (error) {
