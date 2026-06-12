@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useBookmark } from "../contexts/BookmarkContext";
+import { useReview } from "../contexts/ReviewContext";
 import { useNavigate } from "react-router-dom";
+import {
+  faCalendarAlt,
+  faEye,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ResourceLibraries = ({
   resourceId,
@@ -9,7 +15,6 @@ const ResourceLibraries = ({
   fileName,
   fileType,
   fileUrl,
-  downloadIcon,
   calanderIcon,
   bookmarkIconR,
   bookmarkIconS,
@@ -21,6 +26,7 @@ const ResourceLibraries = ({
   onBookmarkToggle,
 }) => {
   const navigate = useNavigate();
+  const { summaries } = useReview();
 
   const handleResourceOpen = () => {
     navigate(`/reader/${resourceId}`);
@@ -90,12 +96,12 @@ const ResourceLibraries = ({
           <div className="flex items-center gap-5 font-semibold text-black/30">
             {/* 1.2K */}
             <p className="flex items-center gap-1">
-              <FontAwesomeIcon icon={downloadIcon} />
-              <span>{downloads}</span>
+              <FontAwesomeIcon icon={faThumbsUp} />
+              {summaries?.[resourceId]?.likes || 0}
             </p>
             {/* 450 Download */}
             <p className="flex items-center gap-1">
-              <FontAwesomeIcon icon={calanderIcon} />
+              <FontAwesomeIcon icon={faCalendarAlt} />
               <span>{year}</span>
             </p>
           </div>
@@ -111,8 +117,8 @@ const ResourceLibraries = ({
             onClick={handleResourceOpen}
             className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-[#EFEEFB] text-[#1152D4] rounded-lg mx-auto text-center cursor-pointer"
           >
-            <FontAwesomeIcon icon={downloadIcon} />
-            <p className="font-bold">Download Resource</p>
+            <FontAwesomeIcon icon={faEye} />
+            <p className="font-bold">View Resource</p>
           </button>
         </div>
       </div>

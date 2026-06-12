@@ -213,62 +213,6 @@ const Dashboard = () => {
           </button>
         </section>
       </section>
-
-      {/* ACTIVE FACULTY MEMBERS */}
-      <div className="grid grid-cols-[1fr_1fr_1fr_auto] mt-10 overflow-hidden bg-white shadow-xl rounded-xl">
-        <div className="flex items-center justify-between col-span-4 px-6 py-10 font-bold">
-          <h2 className="text-2xl capitalize">Active faculty members</h2>
-          <p
-            className="text-lg transition-all duration-100 transform cursor-pointer text-black/50 hover:text-black"
-            onClick={() => navigate("/admin/user-management")}
-          >
-            See all users
-          </p>
-        </div>
-
-        {/* HEADER */}
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          Full Name
-        </p>
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          Department
-        </p>
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          Status
-        </p>
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          Actions
-        </p>
-
-        {/* DATA ROW */}
-        <FacultyMembers
-          icon={faEllipsisVertical}
-          name="Dr. Selamawit Tadesse"
-          department="Electrical Engineering"
-          status="Active"
-        />
-
-        <FacultyMembers
-          icon={faEllipsisVertical}
-          name="Mr. Biniam Girma"
-          department="Software Engineering"
-          status="Banned"
-        />
-
-        <FacultyMembers
-          icon={faEllipsisVertical}
-          name="Dr. Alazar Chernet"
-          department="Mechanical Engineering"
-          status="Inactive"
-        />
-
-        <FacultyMembers
-          icon={faEllipsisVertical}
-          name="Mr. Mikias Zelalem"
-          department="Civil Engineering"
-          status="Suspended"
-        />
-      </div>
     </div>
   );
 };

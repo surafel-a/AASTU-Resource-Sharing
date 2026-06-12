@@ -146,7 +146,7 @@ export const useResource = () => {
   const context = useContext(ResourceContext);
 
   if (!context) {
-    throw new Error("useResource must be used within AuthProvider");
+    throw new Error("useResource must be used within ResourceProvider");
   }
 
   return context;

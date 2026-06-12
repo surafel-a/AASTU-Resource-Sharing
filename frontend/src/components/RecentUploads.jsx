@@ -4,9 +4,15 @@ import {
   faDownload,
   faFilePdf,
   faFileWord,
+  faThumbsDown,
+  faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useReview } from "../contexts/ReviewContext";
+import { useEffect } from "react";
+
 const RecentUploads = ({
+  resourceId,
   icon,
   code,
   course,
@@ -15,6 +21,14 @@ const RecentUploads = ({
   downloads,
   fileExtension,
 }) => {
+  const { summaries, getResourceSummary } = useReview();
+
+  useEffect(() => {
+    if (resourceId) {
+      getResourceSummary(resourceId);
+    }
+  }, [resourceId]);
+
   return (
     <div className="grid grid-cols-[auto_1fr] bg-white shadow-lg py-5 rounded-xl">
       <div className="px-5 py-2">
@@ -28,15 +42,14 @@ const RecentUploads = ({
         </p>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-5">
-            {/* 1.2K */}
-            <p className="flex items-center gap-1">
-              <FontAwesomeIcon icon={faEye} />
-              <span>{views}</span>
+            <p className="text-green-600 flex items-center gap-1">
+              <FontAwesomeIcon icon={faThumbsUp} />
+              {summaries?.[resourceId]?.likes || 0}
             </p>
-            {/* 450 Download */}
-            <p className="flex items-center gap-1">
-              <FontAwesomeIcon icon={faDownload} />
-              <span>{downloads}</span>
+
+            <p className="text-red-500 flex items-center gap-1">
+              {summaries?.[resourceId]?.dislikes || 0}
+              <FontAwesomeIcon icon={faThumbsDown} />
             </p>
           </div>
           <p className="bg-[#e4e4ee] font-semibold px-4 py-1 rounded-md uppercase">

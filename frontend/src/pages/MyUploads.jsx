@@ -32,6 +32,7 @@ import { formatFileSize } from "../utilities/formatFileSize";
 
 const MyUploads = () => {
   const { myResources, loading } = useResource();
+  const [search, setSearch] = useState("");
 
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -53,10 +54,18 @@ const MyUploads = () => {
       : "px-4 sm:px-6 py-2 bg-[#e4e4e9] rounded-full cursor-pointer transition-all duration-200 hover:bg-[#d6d6dc]";
 
   // FILTERED RESOURCES
-  const filteredResources =
-    activeFilter === "all"
-      ? myResources
-      : myResources.filter((r) => r.status === activeFilter);
+  const filteredResources = myResources.filter((r) => {
+    const statusMatch =
+      activeFilter === "all" ? true : r.status === activeFilter;
+
+    const searchMatch =
+      !search ||
+      r?.title?.toLowerCase().includes(search.toLowerCase()) ||
+      r?.category?.toLowerCase().includes(search.toLowerCase()) ||
+      r?.type?.toLowerCase().includes(search.toLowerCase());
+
+    return statusMatch && searchMatch;
+  });
 
   // FILE ICONS
   const getFileIcon = (type) => {
@@ -162,6 +171,8 @@ const MyUploads = () => {
             <input
               className="w-full pl-10 pr-6 py-3 rounded-xl bg-[#F6F6F8] focus:outline-none focus:ring-2 focus:ring-[#1152D4] placeholder:font-semibold placeholder:text-black/40"
               placeholder="Search your uploads..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
             <FontAwesomeIcon

@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCourse } from "../contexts/CourseContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const CourseLists = ({
   courseId,
@@ -26,6 +27,7 @@ const CourseLists = ({
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const { deleteCourse } = useCourse();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   switch (year) {
@@ -60,33 +62,35 @@ const CourseLists = ({
           {courseCode}
         </p>
 
-        <button className="absolute top-0 right-0 p-6 w-[120px] flex justify-end">
-          {!open ? (
-            <FontAwesomeIcon
-              onClick={() => setOpen(true)}
-              className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
-              icon={faEllipsisVertical}
-            />
-          ) : (
-            <div className="flex flex-col items-center bg-white rounded-lg text-black/50">
+        {user?.role === "admin" && (
+          <button className="absolute top-0 right-0 p-6 w-[120px] flex justify-end">
+            {!open ? (
               <FontAwesomeIcon
-                icon={faXmark}
-                onClick={() => setOpen(false)}
+                onClick={() => setOpen(true)}
                 className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+                icon={faEllipsisVertical}
               />
-              <FontAwesomeIcon
-                onClick={() => navigate(`${courseId}/edit`)}
-                icon={faPen}
-                className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
-              />
-              <FontAwesomeIcon
-                icon={faTrash}
-                onClick={() => setShowConfirm(true)}
-                className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
-              />
-            </div>
-          )}
-        </button>
+            ) : (
+              <div className="flex flex-col items-center bg-white rounded-lg text-black/50">
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  onClick={() => setOpen(false)}
+                  className="p-3 rounded-full cursor-pointer hover:bg-gray-100"
+                />
+                <FontAwesomeIcon
+                  onClick={() => navigate(`${courseId}/edit`)}
+                  icon={faPen}
+                  className="p-3 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600"
+                />
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  onClick={() => setShowConfirm(true)}
+                  className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
+                />
+              </div>
+            )}
+          </button>
+        )}
       </div>
 
       <h2 className="mb-4 text-xl font-bold">{courseName}</h2>
@@ -118,6 +122,7 @@ const CourseLists = ({
       <div className="flex items-center justify-between text-[#1152D4] font-semibold text-lg">
         <p>View Materials</p>
         <FontAwesomeIcon
+          onClick={() => navigate(`/courses/${courseId}`)}
           icon={faArrowRight}
           className="p-2 rounded-full cursor-pointer hover:bg-blue-100"
         />

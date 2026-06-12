@@ -110,10 +110,6 @@ const ResourceManagement = () => {
         <p className="text-xl font-semibold text-black/50">
           Oversee and moderate all academic materials on the platform.
         </p>
-        {/* <div className="flex items-center gap-1 px-4 py-2 bg-[#1152D4] text-white font-semibold rounded-lg cursor-pointer">
-          <FontAwesomeIcon icon={faAdd} />
-          <p>Add Resource</p>
-        </div> */}
       </section>
 
       {/* GRID CONTAINER */}
@@ -148,9 +144,9 @@ const ResourceManagement = () => {
       </section>
 
       {/* GRID CONTAINER */}
-      <section className="grid items-center grid-cols-[auto_1fr_1fr_1fr_auto_auto_auto] overflow-hidden bg-white shadow-xl rounded-xl border-2 border-gray-300">
+      <section className="grid items-center grid-cols-[1fr_auto_1fr_auto_auto_auto] overflow-hidden bg-white shadow-xl rounded-xl border-2 border-gray-300">
         {/* TOP NAV */}
-        <div className="flex items-center col-span-7 gap-5 p-6 font-semibold text-black/70 text-lg">
+        <div className="flex items-center col-span-6 gap-5 p-6 font-semibold text-black/70 text-lg">
           <div className="relative flex-1">
             <input
               type="text"
@@ -201,12 +197,7 @@ const ResourceManagement = () => {
         </div>
 
         {/* HEADER */}
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          <input
-            type="checkbox"
-            className="w-5 h-5 cursor-pointer accent-blue-600"
-          />
-        </p>
+
         <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
           Title
         </p>
@@ -243,7 +234,7 @@ const ResourceManagement = () => {
         ))}
 
         {/* FOOTER */}
-        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-7">
+        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-6">
           <p>
             Showing {startIndex + 1} to{" "}
             {Math.min(startIndex + itemsPerPage, filteredResources.length)} of{" "}

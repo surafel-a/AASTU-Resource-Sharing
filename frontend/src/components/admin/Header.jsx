@@ -3,6 +3,7 @@ import {
   faMagnifyingGlass,
   faBell,
   faGear,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../contexts/UserContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -71,6 +72,14 @@ const Header = () => {
                 : "text-black/50 bg-white hover:bg-[#F6F6F8]"
             }`}
           />
+
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition cursor-pointer"
+          >
+            <FontAwesomeIcon icon={faUser} />
+            User App
+          </button>
         </div>
         <div className="w-0.5 h-10 bg-gray-200 rounded-full"></div>
         <div className="flex items-center justify-center gap-3">

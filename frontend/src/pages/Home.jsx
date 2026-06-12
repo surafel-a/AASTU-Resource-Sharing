@@ -75,12 +75,18 @@ const Home = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-white text-[#1152D4] px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-gray-100 transition">
-                View My Analytics
+              <button
+                onClick={() => navigate("/library")}
+                className="bg-white text-[#1152D4] px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-gray-100 transition"
+              >
+                View All Resources
               </button>
 
-              <button className="px-6 py-3 font-bold text-white border-white rounded-lg cursor-pointer border-2 hover:bg-white hover:text-[#1152D4] transition">
-                Study Roadmap
+              <button
+                onClick={() => navigate("/bookmarks")}
+                className="px-6 py-3 font-bold text-white border-white rounded-lg cursor-pointer border-2 hover:bg-white hover:text-[#1152D4] transition"
+              >
+                See Bookmarks
               </button>
             </div>
           </div>
@@ -115,6 +121,7 @@ const Home = () => {
             {resources.slice(0, 4).map((resource) => (
               <RecentUploads
                 key={resource._id}
+                resourceId={resource._id}
                 code={resource.course.code}
                 icon={getFileIcon(resource.type)}
                 course={resource.title}

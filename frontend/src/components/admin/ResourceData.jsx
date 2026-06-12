@@ -115,12 +115,6 @@ const ResourceData = ({
 
   return (
     <>
-      <p className="p-6 font-bold uppercase text-black/50">
-        <input
-          type="checkbox"
-          className="w-5 h-5 cursor-pointer accent-blue-600"
-        />
-      </p>
       <div className="flex items-center gap-3 p-6">
         <FontAwesomeIcon
           icon={iconFile}
@@ -175,7 +169,7 @@ const ResourceData = ({
           className="p-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600"
         />
       </div>
-      <div className="col-span-7 border border-black/10"></div>
+      <div className="col-span-6 border border-black/10"></div>
 
       {/* DELETION CONFIRMATION MODAL */}
       {showConfirm && (

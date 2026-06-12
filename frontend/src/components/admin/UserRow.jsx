@@ -73,12 +73,6 @@ const UserRow = ({
 
   return (
     <>
-      <p className="p-6 font-bold uppercase text-black/50">
-        <input
-          type="checkbox"
-          className="w-5 h-5 cursor-pointer accent-blue-600"
-        />
-      </p>
       <div className="flex items-center gap-4 p-6">
         <p className="p-3 rounded-full bg-[#E7EEFB] font-bold text-lg">
           {getInitials(name)}
@@ -95,14 +89,6 @@ const UserRow = ({
           {role}
         </p>
       </div>
-      {/* <div
-        className={`flex items-center gap-2 p-6 text-xl font-bold ${statusStyles[normalizedStatus]?.split(" ")[0] || "text-gray-500"}`}
-      >
-        <div
-          className={`w-3 h-3 rounded-full ${statusStyles[normalizedStatus]?.split(" ")[1] || "text-gray-500"}`}
-        ></div>
-        <p>{status}</p>
-      </div> */}
 
       <div
         className={`flex items-center gap-2 p-6 text-xl font-bold ${style.text}`}
@@ -136,7 +122,7 @@ const UserRow = ({
           className="p-3 rounded-full cursor-pointer hover:text-red-600 hover:bg-red-100"
         />
       </div>
-      <div className="col-span-7 border border-black/10"></div>
+      <div className="col-span-6 border border-black/10"></div>
 
       {confirmOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

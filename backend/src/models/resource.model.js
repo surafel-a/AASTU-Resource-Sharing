@@ -56,10 +56,6 @@ const resourceSchema = new mongoose.Schema(
       enum: ["public", "department", "course"],
       default: "public",
     },
-    downloads: {
-      type: Number,
-      default: 0,
-    },
     status: {
       type: String,
       enum: ["approved", "pending", "rejected"],

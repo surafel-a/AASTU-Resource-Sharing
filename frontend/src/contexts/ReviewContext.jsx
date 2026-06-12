@@ -5,6 +5,7 @@ const ReviewContext = createContext();
 
 export function ReviewProvider({ children }) {
   const [summary, setSummary] = useState(null); // { likes, dislikes, avgRating, totalRatings }
+  const [summaries, setSummaries] = useState({});
   const [userReview, setUserReview] = useState(null); // { reaction, rating, comment }
   const [loading, setLoading] = useState(false);
 
@@ -21,6 +22,10 @@ export function ReviewProvider({ children }) {
         );
         setSummary(data.data.summary);
         setUserReview(data.data.userReview);
+        setSummaries((prev) => ({
+          ...prev,
+          [resourceId]: data.data.summary,
+        }));
       } catch (error) {
         console.error(error.response?.data || error.message);
       } finally {
@@ -89,6 +94,7 @@ export function ReviewProvider({ children }) {
 
   const value = {
     summary,
+    summaries,
     userReview,
     loading,
     getResourceSummary,

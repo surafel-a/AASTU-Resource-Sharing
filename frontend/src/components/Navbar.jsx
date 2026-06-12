@@ -7,6 +7,7 @@ import {
   faSignOutAlt,
   faBars,
   faTimes,
+  faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
@@ -113,6 +114,16 @@ const Navbar = () => {
 
         {/* RIGHT */}
         <div className="flex items-center gap-3">
+          {user?.role === "admin" && (
+            <button
+              onClick={() => navigate("/admin/dashboard")}
+              className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faShieldAlt} />
+              Admin Panel
+            </button>
+          )}
+
           {/* USER INFO - DESKTOP */}
           <div className="hidden sm:block text-right">
             <h1 className="font-bold text-sm lg:text-base">{user?.name}</h1>

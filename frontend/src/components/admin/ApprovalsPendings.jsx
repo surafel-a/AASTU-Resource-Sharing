@@ -94,13 +94,6 @@ const ApprovalsPendings = ({
 
   return (
     <>
-      <p className="p-6">
-        <input
-          type="checkbox"
-          className="w-5 h-5 cursor-pointer accent-blue-600"
-        />
-      </p>
-
       {/* RESOURCE INFO */}
       <div className="flex items-center gap-4 p-6">
         <FontAwesomeIcon
@@ -185,7 +178,7 @@ const ApprovalsPendings = ({
         )}
       </div>
 
-      <div className="col-span-6 border border-black/10"></div>
+      <div className="col-span-5 border border-black/10"></div>
     </>
   );
 };

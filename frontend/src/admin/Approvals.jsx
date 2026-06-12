@@ -116,14 +116,9 @@ const Approvals = () => {
         />
       </section>
 
-      <section className="grid items-center grid-cols-[auto_1.5fr_1fr_1fr_1fr_auto] overflow-hidden bg-white shadow-xl rounded-xl">
+      <section className="grid items-center grid-cols-[1.5fr_1fr_1fr_1fr_auto] overflow-hidden bg-white shadow-xl rounded-xl">
         {/* HEADER */}
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          <input
-            type="checkbox"
-            className="w-5 h-5 cursor-pointer accent-blue-600"
-          />
-        </p>
+
         <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
           Resource Title
         </p>
@@ -158,7 +153,7 @@ const Approvals = () => {
         ))}
 
         {/* FOOTER */}
-        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-6">
+        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-5">
           <p>
             Showing {startIndex + 1} to{" "}
             {Math.min(startIndex + itemsPerPage, resources.length)} of{" "}

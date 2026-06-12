@@ -95,10 +95,6 @@ const UserManagement = () => {
           Manage and oversee all registered students and platform
           administrators.
         </p>
-        <div className="flex items-center gap-1 px-4 py-2 bg-[#1152D4] text-white font-semibold rounded-lg cursor-pointer">
-          <FontAwesomeIcon icon={faUserPlus} />
-          <p>Add New User</p>
-        </div>
       </section>
 
       {/* USER OVERVIEW */}
@@ -117,9 +113,9 @@ const UserManagement = () => {
       </section>
 
       {/* GRID CONTAINER */}
-      <section className="grid items-center grid-cols-[auto_1.5fr_1fr_auto_1fr_1fr_auto] overflow-hidden bg-white shadow-xl rounded-xl">
+      <section className="grid items-center grid-cols-[1.5fr_1fr_auto_1fr_1fr_auto] overflow-hidden bg-white shadow-xl rounded-xl">
         {/* TOP NAV */}
-        <div className="flex items-center col-span-7 gap-5 p-6 font-semibold">
+        <div className="flex items-center col-span-6 gap-5 p-6 font-semibold">
           <div className="relative flex-1">
             <input
               type="text"
@@ -187,12 +183,7 @@ const UserManagement = () => {
         </div>
 
         {/* HEADER */}
-        <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
-          <input
-            type="checkbox"
-            className="w-5 h-5 cursor-pointer accent-blue-600"
-          />
-        </p>
+
         <p className="p-6 bg-[#e4e4e9] font-bold text-black/50  uppercase">
           User Details
         </p>
@@ -234,7 +225,7 @@ const UserManagement = () => {
         ))}
 
         {/* FOOTER */}
-        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-7">
+        <div className="flex items-center justify-between p-6 font-bold text-black/50 bg-[#e4e4e9] col-span-6">
           <p>
             Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)}{" "}
             of {filteredUsers.length} users

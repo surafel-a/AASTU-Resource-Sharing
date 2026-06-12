@@ -316,8 +316,6 @@ const Library = () => {
                 downloads={resource.downloads}
                 year={resource.course.year}
                 fileIcon={getFileIcon(resource.type)}
-                downloadIcon={faDownload}
-                calanderIcon={faCalendar}
                 bookmarkIconR={faBookmarkRegular}
                 bookmarkIconS={faBookmarkSolid}
                 isBookmarked={isBookmarked(resource._id)}

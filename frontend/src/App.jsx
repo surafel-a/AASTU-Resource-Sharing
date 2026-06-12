@@ -17,6 +17,7 @@ import AddCourse from "./pages/AddCourse";
 import UpdateResource from "./pages/UpdateResource";
 import Reader from "./pages/Reader";
 import PageNoteFound from "./pages/PageNotFound";
+import CourseDetails from "./pages/CourseDetails";
 
 // LAYOUTS
 import MainLayout from "./layouts/MainLayout";
@@ -84,6 +85,7 @@ const App = () => {
             <Route index element={<Courses />} />
             <Route path="add" element={<AddCourse />} />
             <Route path=":courseId/edit" element={<EditCourse />} />
+            <Route path=":id" element={<CourseDetails />} />
           </Route>
 
           {/* UPLOADS */}
