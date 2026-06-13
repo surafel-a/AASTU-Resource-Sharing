@@ -23,7 +23,6 @@ const reviewSchema = new mongoose.Schema(
       max: [5, "Rating cannot exceed 5"],
       default: null,
     },
-    // "like" | "dislike" | null — null means no reaction yet
     reaction: {
       type: String,
       enum: ["like", "dislike", null],
@@ -33,10 +32,8 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// One user can only have ONE review per resource (enforced at DB level)
 reviewSchema.index({ resource: 1, reviewedBy: 1 }, { unique: true });
 
-// Static method: get summary stats for a resource in one DB call
 reviewSchema.statics.getSummary = async function (resourceId) {
   const result = await this.aggregate([
     { $match: { resource: new mongoose.Types.ObjectId(resourceId) } },
