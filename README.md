@@ -258,7 +258,9 @@ This project was developed as a Final Year Project at Addis Ababa Science and Te
 AASTU Final Year Project Team
 
 - Surafel Aschalew
-- Team Members
+- Sifen Oumar
+- Fuad Ahmed
+- Yohannes Tsegaye
 
 ---
 
